@@ -15,5 +15,16 @@
             <from id="_from2" uri="seda:b"/>
             <log id="_log1" message="${body}"/>
         </route>
+        <route id="_route3">
+            <from id="_from3" uri="seda:c"/>
+            <split id="_split2">
+                <xpath>//foo/bar/text()</xpath>
+                <to id="_to2" uri="seda:d"/>
+            </split>
+        </route>
+        <route id="_route4">
+            <from id="_from4" uri="seda:d"/>
+            <log id="_log2" message="${body}"/>
+        </route>
     </camelContext>
 </beans>

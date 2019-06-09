@@ -36,6 +36,7 @@ public class Test {
 		LOGGER.info("FIRST MESSAGE SENT");
 		String xmlBody = "<foos><foo><bar>First Message</bar></foo><foo><bar>Second Message</bar></foo><foo><bar>Third Message</bar></foo></foos>";
 		producerTemplate.sendBody("seda:c",xmlBody);
+		LOGGER.info("SECOND MESSAGE SENT");
 		//producerTemplate.sendBodyAndHeader("direct:start", "Hello World", "recipientList", "seda:a,seda:b,seda:c");
 		//LOGGER.info("FIRST MESSAGE SENT");
 		//Object response = producerTemplate.requestBodyAndHeader("direct:start", "Hello World", "recipientList", "direct:a,direct:b,direct:c,xxx:d",String.class);

@@ -33,7 +33,10 @@ public class SpringTest {
 			ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
 			String body = "first message\nsecond message \nthird message\nfourth message";
 			producerTemplate.sendBody("seda:a",body);
-			LOGGER.info("MESSAGE SENT");
+			LOGGER.info("FIRST MESSAGE SENT");
+			String xmlBody = "<foos><foo><bar>First Message</bar></foo><foo><bar>Second Message</bar></foo><foo><bar>Third Message</bar></foo></foos>";
+			producerTemplate.sendBody("seda:c",xmlBody);
+			LOGGER.info("SECOND MESSAGE SENT");
 			try {
 				main.stop();
 			} catch (Exception e) {
