@@ -33,7 +33,9 @@ public class Test {
 		ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
 		String body = "first message\nsecond message \nthird message\nfourth message";
 		producerTemplate.sendBody("seda:a",body);
-		LOGGER.info("MESSAGE SENT");
+		LOGGER.info("FIRST MESSAGE SENT");
+		String xmlBody = "<foos><foo><bar>First Message</bar></foo><foo><bar>Second Message</bar></foo><foo><bar>Third Message</bar></foo></foos>";
+		producerTemplate.sendBody("seda:c",xmlBody);
 		//producerTemplate.sendBodyAndHeader("direct:start", "Hello World", "recipientList", "seda:a,seda:b,seda:c");
 		//LOGGER.info("FIRST MESSAGE SENT");
 		//Object response = producerTemplate.requestBodyAndHeader("direct:start", "Hello World", "recipientList", "direct:a,direct:b,direct:c,xxx:d",String.class);

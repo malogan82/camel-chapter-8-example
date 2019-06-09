@@ -12,6 +12,13 @@ public class MySplitRouteBuilder extends RouteBuilder {
 		
 		from("seda:b")
 			.log("${body}");
+		
+		from("seda:c")
+		  .split(xpath("//foo/bar/text()"))
+		  .to("seda:d");
+		
+		from("seda:d")
+			.log("${body}");
 
 	}
 
