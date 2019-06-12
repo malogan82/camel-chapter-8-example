@@ -43,6 +43,13 @@ public class MySplitRouteBuilder extends RouteBuilder {
 		
 		from("seda:d")
 			.log("${body}");
+		
+		from("file:C:\\workspaceApacheCamelCookBook\\camel-chapter-8-example\\inbox\\split")
+	    	.split().tokenize("\n", 10).streaming()
+	        .to("activemq:queue:order");
+		
+		from("activemq:queue:order")
+			.log("from activemq:queue:order ------> ${body}");
 
 	}
 

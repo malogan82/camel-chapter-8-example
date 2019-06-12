@@ -54,5 +54,16 @@
             <from id="_from6" uri="activemq:parallel-custom-pool"/>
             <log id="_log3" message="from activemq:parallel-custom-pool -> ${body}"/>
         </route>
+        <route id="_route7">
+            <from id="_from7" uri="file:C:\\workspaceApacheCamelCookBook\\camel-chapter-8-example\\inbox\\split"/>
+            <split id="_split4" streaming="true">
+                <tokenize group="10" token="\n"/>
+                <to id="_to4" uri="activemq:queue:order"/>
+            </split>
+        </route>
+        <route id="_route8">
+            <from id="_from8" uri="activemq:queue:order"/>
+            <log id="_log4" message="from activemq:queue:order ------> ${body}"/>
+        </route>
     </camelContext>
 </beans>
