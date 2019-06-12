@@ -6,8 +6,15 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.xml.XPathBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import it.marco.camel.Test;
+import it.marco.camel.pojo.MyOrderStrategy;
 
 public class MySplitRouteBuilder extends RouteBuilder {
+	
+	public static Logger LOGGER = LoggerFactory.getLogger(MySplitRouteBuilder.class);
 
 	@Override
 	public void configure() throws Exception {
@@ -57,6 +64,25 @@ public class MySplitRouteBuilder extends RouteBuilder {
 		
 		from("direct:group")
 			.log("from direct:group ----------> ${body}");
+		
+		from("direct:body")
+			.split()
+			.method("mySplitterBean", "splitBody")
+			.to("direct:result");
+		
+		from("direct:message")
+			.split()
+			.method("mySplitterBean", "splitMessage")
+			.to("direct:result");
+		
+		from("direct:result")
+			.log("from direct:result ----------> ${header.user} - ${body}");
+		
+		from("direct:start2")
+			.split(body().tokenize("@"), new MyOrderStrategy())
+				.to("bean:MyOrderService?method=handleOrder")
+			.end()
+			.to("bean:MyOrderService?method=buildCombinedResponse");
 
 	}
 

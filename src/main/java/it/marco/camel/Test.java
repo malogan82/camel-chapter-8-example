@@ -4,11 +4,14 @@ import org.apache.activemq.artemis.jms.client.ActiveMQJMSConnectionFactory;
 import org.apache.activemq.camel.component.ActiveMQComponent;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
+import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.main.Main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jms.support.converter.SimpleMessageConverter;
 
+import it.marco.camel.pojo.MyOrderService;
+import it.marco.camel.pojo.MySplitterBean;
 import it.marco.camel.route.builder.MySplitRouteBuilder;
 import it.marco.camel.runnable.MyRunnable;
 
@@ -24,6 +27,8 @@ public class Test {
 		activeMQComponent.setConnectionFactory(activeMQJMSConnectionFactory);
 		activeMQComponent.setMessageConverter(new SimpleMessageConverter());
 		main.bind("activemq", activeMQComponent);
+		main.bind("mySplitterBean", new MySplitterBean(new DefaultCamelContext()));
+		main.bind("MyOrderService", new MyOrderService());
 		main.addRouteBuilder(new MySplitRouteBuilder());
 		//main.addRouteBuilder(new MyRouteBuilder());
 		//main.bind("myAggregationStrategy", new MyAggregationStrategy());
@@ -52,6 +57,12 @@ public class Test {
 		LOGGER.info("FOURTH MESSAGE SENT");
 		producerTemplate.sendBody("direct:start",body);
 		LOGGER.info("FIFTH MESSAGE SENT");
+		producerTemplate.sendBody("direct:body",body);
+		LOGGER.info("SIXTH MESSAGE SENT");
+		String user = "Marco,Luca,Paolo,Antonio";
+		producerTemplate.sendBodyAndHeader("direct:message", body, "user", user);
+		body = body.replace("\n", "@");
+		producerTemplate.sendBody("direct:start2",body);
 		//producerTemplate.sendBodyAndHeader("direct:start", "Hello World", "recipientList", "seda:a,seda:b,seda:c");
 		//LOGGER.info("FIRST MESSAGE SENT");
 		//Object response = producerTemplate.requestBodyAndHeader("direct:start", "Hello World", "recipientList", "direct:a,direct:b,direct:c,xxx:d",String.class);
