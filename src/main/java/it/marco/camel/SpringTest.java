@@ -39,6 +39,8 @@ public class SpringTest {
 			LOGGER.info("SECOND MESSAGE SENT");
 			producerTemplate.sendBody("direct:parallel-custom-pool",xmlBody);
 			LOGGER.info("THIRD MESSAGE SENT");
+			producerTemplate.sendBody("direct:start",body);
+			LOGGER.info("FOURTH MESSAGE SENT");
 			try {
 				main.stop();
 			} catch (Exception e) {

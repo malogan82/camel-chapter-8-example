@@ -50,17 +50,19 @@ public class Test {
 		LOGGER.info("THIRD MESSAGE SENT");
 		producerTemplate.sendBody("activemq:my.queue.executor.service",xmlBody);
 		LOGGER.info("FOURTH MESSAGE SENT");
+		producerTemplate.sendBody("direct:start",body);
+		LOGGER.info("FIFTH MESSAGE SENT");
 		//producerTemplate.sendBodyAndHeader("direct:start", "Hello World", "recipientList", "seda:a,seda:b,seda:c");
 		//LOGGER.info("FIRST MESSAGE SENT");
 		//Object response = producerTemplate.requestBodyAndHeader("direct:start", "Hello World", "recipientList", "direct:a,direct:b,direct:c,xxx:d",String.class);
 		//LOGGER.info("SECOND MESSAGE SENT");
 		//LOGGER.info(String.format("RESPONSE ----------> %s",response));
-//		try {
-//			main.stop();
-//		} catch (Exception e) {
-//			LOGGER.error(e.getMessage(),e);
-//		}
-//		LOGGER.info("MAIN STOPPED");
+		try {
+			main.stop();
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage(),e);
+		}
+		LOGGER.info("MAIN STOPPED");
 		
 	}
 	
