@@ -63,6 +63,8 @@ public class Test {
 		producerTemplate.sendBodyAndHeader("direct:message", body, "user", user);
 		body = body.replace("\n", "@");
 		producerTemplate.sendBody("direct:start2",body);
+		body = body.replace("@", ",");
+		producerTemplate.sendBody("direct:streaming",body);
 		//producerTemplate.sendBodyAndHeader("direct:start", "Hello World", "recipientList", "seda:a,seda:b,seda:c");
 		//LOGGER.info("FIRST MESSAGE SENT");
 		//Object response = producerTemplate.requestBodyAndHeader("direct:start", "Hello World", "recipientList", "direct:a,direct:b,direct:c,xxx:d",String.class);

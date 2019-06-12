@@ -83,6 +83,20 @@ public class MySplitRouteBuilder extends RouteBuilder {
 				.to("bean:MyOrderService?method=handleOrder")
 			.end()
 			.to("bean:MyOrderService?method=buildCombinedResponse");
+		
+		from("direct:streaming")
+		  .split(body().tokenize(","), new MyOrderStrategy())
+		    .parallelProcessing()
+		    .streaming()
+		    .to("activemq:my.parts")
+		  .end()
+		  .to("activemq:all.parts");
+		
+		from("activemq:my.parts")
+			.log("from activemq:my.parts ----------> ${body}");
+		
+		from("activemq:all.parts")
+			.log("from activemq:all.parts ----------> ${body}");
 
 	}
 
