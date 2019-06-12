@@ -37,6 +37,8 @@ public class SpringTest {
 			String xmlBody = "<foos><foo><bar>First Message</bar></foo><foo><bar>Second Message</bar></foo><foo><bar>Third Message</bar></foo></foos>";
 			producerTemplate.sendBody("seda:c",xmlBody);
 			LOGGER.info("SECOND MESSAGE SENT");
+			producerTemplate.sendBody("direct:parallel-custom-pool",xmlBody);
+			LOGGER.info("THIRD MESSAGE SENT");
 			try {
 				main.stop();
 			} catch (Exception e) {
