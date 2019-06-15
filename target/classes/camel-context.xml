@@ -5,6 +5,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans                  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd                 http://camel.apache.org/schema/spring                  http://camel.apache.org/schema/spring/camel-spring.xsd">
     <bean class="it.marco.camel.handler.MyExceptionHandler" id="myExceptionHandler"/>
     <bean class="it.marco.camel.processor.MyProcessor" id="myProcessor"/>
+    <bean class="it.marco.camel.strategy.MyTimeoutAwareAggregationStrategy" id="mytimeoutAwareAggregationStrategy"/>
     <bean class="it.marco.camel.strategy.MyAggregationStrategy" id="myAggregationStrategy"/>
     <bean class="it.marco.camel.pojo.MyAggregationStrategyPojo" id="myAggregationStrategyPojo"/>
     <bean class="java.util.concurrent.LinkedBlockingQueue" id="linkedBlockingQueue"/>
@@ -114,11 +115,18 @@
 	       <!-- <split strategyRef="myAggregationStrategy" parallelProcessing="true"> --> <!-- OPTION 4 - parallelProcessing -->
 	       <!-- <split strategyRef="myAggregationStrategy" parallelAggregate="true"> --> <!-- OPTION 5 - parallelAggregate -->
 	       <!-- <split strategyRef="myAggregationStrategy" executorServiceRef="threadPoolExecutor"> --> <!-- OPTION 6 - executorServiceRef -->   
-	       <split strategyRef="myAggregationStrategy" stopOnException="true">   
+	       <!-- <split strategyRef="myAggregationStrategy" stopOnException="true">   
 	       	   <tokenize token=","/>
 	           <to uri="direct:process"/>
-	       </split>
-	       <!-- <split strategyRef="myAggregationStrategy" streaming="true"> --> <!-- OPTION 8 - streaming -->	
+	       </split> --> <!-- OPTION 7 - stopOnException -->
+	       <!-- <split strategyRef="myAggregationStrategy" streaming="false"> 
+	      	   <tokenize token=","/>
+	           <to uri="direct:process"/>
+	       </split> --> <!-- OPTION 8 - streaming -->
+	       <!-- <split strategyRef="mytimeoutAwareAggregationStrategy" parallelProcessing="true" timeout="1000">
+	       	   <tokenize token=","/>
+	           <to uri="direct:process"/>
+	       </split> --> <!-- OPTION 9 - timeout -->
         </route>
         <route>
         	<from uri="direct:process"/>
