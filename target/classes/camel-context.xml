@@ -6,7 +6,8 @@
     <bean class="it.marco.camel.handler.MyExceptionHandler" id="myExceptionHandler"/>
     <bean class="it.marco.camel.processor.MyOnPrepareProcessor" id="myOnPrepareProcessor"/>
     <bean class="it.marco.camel.processor.MyProcessor" id="myProcessor"/>
-    <bean class="it.marco.camel.strategy.MyTimeoutAwareAggregationStrategy" id="mytimeoutAwareAggregationStrategy"/>
+    <bean
+        class="it.marco.camel.strategy.MyTimeoutAwareAggregationStrategy" id="mytimeoutAwareAggregationStrategy"/>
     <bean class="it.marco.camel.strategy.MyAggregationStrategy" id="myAggregationStrategy"/>
     <bean class="it.marco.camel.pojo.MyAggregationStrategyPojo" id="myAggregationStrategyPojo"/>
     <bean class="java.util.concurrent.LinkedBlockingQueue" id="linkedBlockingQueue"/>
@@ -27,14 +28,14 @@
         <property name="connectionFactory" ref="connectionFactory"/>
     </bean>
     <camelContext id="camelContext-6181de96-d9a3-4d14-817d-d295a4a6a151" xmlns="http://camel.apache.org/schema/spring">
-    	<onException>
-    	    <exception>java.lang.Exception</exception>
-    	    <redeliveryPolicy maximumRedeliveries="1"/>
-    	    <handled>
-		      <constant>true</constant>
-		    </handled>
-		    <bean ref="myExceptionHandler" method="messageFailed"/>
-    	</onException>
+        <onException>
+            <exception>java.lang.Exception</exception>
+            <redeliveryPolicy maximumRedeliveries="1"/>
+            <handled>
+                <constant>true</constant>
+            </handled>
+            <bean method="messageFailed" ref="myExceptionHandler"/>
+        </onException>
         <route id="_route1">
             <from id="_from1" uri="seda:a"/>
             <split id="_split1">
@@ -90,60 +91,69 @@
             <from id="_from10" uri="direct:group"/>
             <log id="_log5" message="from direct:group ----------> ${body}"/>
         </route>
-        <route>
-        	<from uri="direct:inbox"/>
-        	<split streaming="true">
-        	    <tokenize token="order"
-        	    		  xml="true"
-        	    		  inheritNamespaceTagName="orders"/>
-        	    <to uri="activemq:queue:order"/>
-        	</split>
+        <route id="_route16">
+            <from id="_from11" uri="direct:inbox"/>
+            <split id="_split6" streaming="true">
+                <tokenize inheritNamespaceTagName="orders" token="order" xml="true"/>
+                <to id="_to6" uri="activemq:queue:order"/>
+            </split>
         </route>
-        <route>
-        	<from uri="activemq:queue:order"/>
-        	<log message="${body}"/>
+        <route id="_route17">
+            <from id="_from12" uri="activemq:queue:order"/>
+            <log id="_log6" message="${body}"/>
         </route>
-        <route>
-        	<from uri="direct:options"/>
-        	<!-- <split strategyRef="myAggregationStrategy"> --> <!-- OPTION 1 - strategyRef -->
-        	<!-- <split strategyRef="myAggregationStrategyPojo" strategyMethodName="aggregate"> --> <!-- OPTION 2 - strategyMethodName -->
-        	<!-- <split strategyRef="myAggregationStrategyPojo" 
+        <route id="_route18">
+            <!-- <split strategyRef="myAggregationStrategy"> -->
+            <!-- OPTION 1 - strategyRef -->
+            <!-- <split strategyRef="myAggregationStrategyPojo" strategyMethodName="aggregate"> -->
+            <!-- OPTION 2 - strategyMethodName -->
+            <!-- <split strategyRef="myAggregationStrategyPojo" 
 	        	        strategyMethodName="aggregate"
 	        		    strategyMethodAllowNull="true">	
 	        		 <tokenize token=","/>
 	        		 <to uri="activemq:queue:options"/>
-	        	 </split> --> <!-- OPTION 3 - strategyMethodAllowNull -->
-	       <!-- <split strategyRef="myAggregationStrategy" parallelProcessing="true"> --> <!-- OPTION 4 - parallelProcessing -->
-	       <!-- <split strategyRef="myAggregationStrategy" parallelAggregate="true"> --> <!-- OPTION 5 - parallelAggregate -->
-	       <!-- <split strategyRef="myAggregationStrategy" executorServiceRef="threadPoolExecutor"> --> <!-- OPTION 6 - executorServiceRef -->   
-	       <!-- <split strategyRef="myAggregationStrategy" stopOnException="true">   
+	        	 </split> -->
+            <!-- OPTION 3 - strategyMethodAllowNull -->
+            <!-- <split strategyRef="myAggregationStrategy" parallelProcessing="true"> -->
+            <!-- OPTION 4 - parallelProcessing -->
+            <!-- <split strategyRef="myAggregationStrategy" parallelAggregate="true"> -->
+            <!-- OPTION 5 - parallelAggregate -->
+            <!-- <split strategyRef="myAggregationStrategy" executorServiceRef="threadPoolExecutor"> -->
+            <!-- OPTION 6 - executorServiceRef -->
+            <!-- <split strategyRef="myAggregationStrategy" stopOnException="true">   
 	       	   <tokenize token=","/>
 	           <to uri="direct:process"/>
-	       </split> --> <!-- OPTION 7 - stopOnException -->
-	       <!-- <split strategyRef="myAggregationStrategy" streaming="false"> 
+	       </split> -->
+            <!-- OPTION 7 - stopOnException -->
+            <!-- <split strategyRef="myAggregationStrategy" streaming="false"> 
 	      	   <tokenize token=","/>
 	           <to uri="direct:process"/>
-	       </split> --> <!-- OPTION 8 - streaming -->
-	       <!-- <split strategyRef="mytimeoutAwareAggregationStrategy" parallelProcessing="true" timeout="1000">
+	       </split> -->
+            <!-- OPTION 8 - streaming -->
+            <!-- <split strategyRef="mytimeoutAwareAggregationStrategy" parallelProcessing="true" timeout="1000">
 	       	   <tokenize token=","/>
 	           <to uri="direct:process"/>
-	       </split> --> <!-- OPTION 9 - timeout -->
-	       <!-- <split strategyRef="myAggregationStrategy" onPrepareRef="myOnPrepareProcessor">
+	       </split> -->
+            <!-- OPTION 9 - timeout -->
+            <!-- <split strategyRef="myAggregationStrategy" onPrepareRef="myOnPrepareProcessor">
 	           <tokenize token=","/>
 	           <to uri="direct:process"/>
-	       </split> --> <!-- OPTION 10 - onPrepareRef -->
-	       <split strategyRef="myAggregationStrategy" shareUnitOfWork="true">
-	       	   <tokenize token=","/>
-	           <to uri="direct:process"/>
-	       </split> <!-- OPTION 11 - shareUnitOfWork -->
+	       </split> -->
+            <!-- OPTION 10 - onPrepareRef -->
+            <from id="_from13" uri="direct:options"/>
+            <split id="_split7" shareUnitOfWork="true" strategyRef="myAggregationStrategy">
+                <tokenize token=","/>
+                <to id="_to7" uri="direct:process"/>
+            </split>
+            <!-- OPTION 11 - shareUnitOfWork -->
         </route>
-        <route>
-        	<from uri="direct:process"/>
-        	<process ref="myProcessor"/>
+        <route id="_route19">
+            <from id="_from14" uri="direct:process"/>
+            <process id="_process1" ref="myProcessor"/>
         </route>
-        <route>
-        	<from uri="activemq:queue:options"/>
-        	<log message="from activemq:queue:options ----------> ${body}"/>
+        <route id="_route20">
+            <from id="_from15" uri="activemq:queue:options"/>
+            <log id="_log7" message="from activemq:queue:options ----------> ${body}"/>
         </route>
     </camelContext>
 </beans>
