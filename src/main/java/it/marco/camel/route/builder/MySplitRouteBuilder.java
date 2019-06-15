@@ -97,6 +97,13 @@ public class MySplitRouteBuilder extends RouteBuilder {
 		
 		from("activemq:all.parts")
 			.log("from activemq:all.parts ----------> ${body}");
+		
+		from("direct:inbox")
+			.split().tokenizeXML("order", "orders").streaming()
+			.to("activemq:queue:order");
+		
+		from("activemq:queue:order")
+			.log("from activemq:queue:order ----------> ${body}");
 
 	}
 

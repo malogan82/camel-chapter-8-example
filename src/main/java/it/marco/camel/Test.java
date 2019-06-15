@@ -65,6 +65,12 @@ public class Test {
 		producerTemplate.sendBody("direct:start2",body);
 		body = body.replace("@", ",");
 		producerTemplate.sendBody("direct:streaming",body);
+		String orders = "<orders>"
+						+ "<order><name>Marco</name><surname>Longobardi</surname><amount>50</amount></order>"
+				        + "<order><name>Marco</name><surname>Carletti</surname><amount>100</amount></order>"
+						+ "<order><name>Nevia</name><surname>Roscigno</surname><amount>150</amount></order>"
+				        +"</orders>";
+		producerTemplate.sendBody("direct:inbox",orders);
 		//producerTemplate.sendBodyAndHeader("direct:start", "Hello World", "recipientList", "seda:a,seda:b,seda:c");
 		//LOGGER.info("FIRST MESSAGE SENT");
 		//Object response = producerTemplate.requestBodyAndHeader("direct:start", "Hello World", "recipientList", "direct:a,direct:b,direct:c,xxx:d",String.class);

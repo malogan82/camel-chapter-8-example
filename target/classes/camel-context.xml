@@ -76,5 +76,18 @@
             <from id="_from10" uri="direct:group"/>
             <log id="_log5" message="from direct:group ----------> ${body}"/>
         </route>
+        <route>
+        	<from uri="direct:inbox"/>
+        	<split streaming="true">
+        	    <tokenize token="order"
+        	    		  xml="true"
+        	    		  inheritNamespaceTagName="orders"/>
+        	    <to uri="activemq:queue:order"/>
+        	</split>
+        </route>
+        <route>
+        	<from uri="activemq:queue:order"/>
+        	<log message="${body}"/>
+        </route>
     </camelContext>
 </beans>

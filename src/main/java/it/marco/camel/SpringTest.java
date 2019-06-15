@@ -41,6 +41,12 @@ public class SpringTest {
 			LOGGER.info("THIRD MESSAGE SENT");
 			producerTemplate.sendBody("direct:start",body);
 			LOGGER.info("FOURTH MESSAGE SENT");
+			String orders = "<orders>"
+					+ "<order><name>Marco</name><surname>Longobardi</surname><amount>50</amount></order>"
+			        + "<order><name>Marco</name><surname>Carletti</surname><amount>100</amount></order>"
+					+ "<order><name>Nevia</name><surname>Roscigno</surname><amount>150</amount></order>"
+			        +"</orders>";
+			producerTemplate.sendBody("direct:inbox",orders);
 			try {
 				main.stop();
 			} catch (Exception e) {
