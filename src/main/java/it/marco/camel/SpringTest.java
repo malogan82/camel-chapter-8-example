@@ -1,5 +1,8 @@
 package it.marco.camel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.main.Main;
@@ -47,6 +50,15 @@ public class SpringTest {
 					+ "<order><name>Nevia</name><surname>Roscigno</surname><amount>150</amount></order>"
 			        +"</orders>";
 			producerTemplate.sendBody("direct:inbox",orders);
+			List<String> listBody = new ArrayList<>();
+			listBody.add("Marco");
+			listBody.add("Antonio");
+			listBody.add("Paolo");
+			String response = producerTemplate.requestBody("direct:options",listBody,String.class);
+			LOGGER.info(String.format("response ----------> %s", response));
+//			List<String> listBodyNull = new ArrayList<>();
+//			String responseNull = producerTemplate.requestBody("direct:options",listBodyNull,String.class);
+//			LOGGER.info(String.format("responseNull ----------> %s", responseNull));
 			try {
 				main.stop();
 			} catch (Exception e) {

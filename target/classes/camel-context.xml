@@ -3,6 +3,10 @@
     xmlns:camel="http://camel.apache.org/schema/spring"
     xmlns:prop="http://camel.apache.org/schema/placeholder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans                  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd                 http://camel.apache.org/schema/spring                  http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <bean class="it.marco.camel.handler.MyExceptionHandler" id="myExceptionHandler"/>
+    <bean class="it.marco.camel.processor.MyProcessor" id="myProcessor"/>
+    <bean class="it.marco.camel.strategy.MyAggregationStrategy" id="myAggregationStrategy"/>
+    <bean class="it.marco.camel.pojo.MyAggregationStrategyPojo" id="myAggregationStrategyPojo"/>
     <bean class="java.util.concurrent.LinkedBlockingQueue" id="linkedBlockingQueue"/>
     <bean class="java.util.concurrent.ThreadPoolExecutor" id="threadPoolExecutor">
         <constructor-arg name="corePoolSize" value="8"/>
@@ -21,6 +25,14 @@
         <property name="connectionFactory" ref="connectionFactory"/>
     </bean>
     <camelContext id="camelContext-6181de96-d9a3-4d14-817d-d295a4a6a151" xmlns="http://camel.apache.org/schema/spring">
+    	<onException>
+    	    <exception>java.lang.Exception</exception>
+    	    <redeliveryPolicy maximumRedeliveries="1"/>
+    	    <handled>
+		      <constant>true</constant>
+		    </handled>
+		    <bean ref="myExceptionHandler" method="messageFailed"/>
+    	</onException>
         <route id="_route1">
             <from id="_from1" uri="seda:a"/>
             <split id="_split1">
@@ -88,6 +100,33 @@
         <route>
         	<from uri="activemq:queue:order"/>
         	<log message="${body}"/>
+        </route>
+        <route>
+        	<from uri="direct:options"/>
+        	<!-- <split strategyRef="myAggregationStrategy"> --> <!-- OPTION 1 - strategyRef -->
+        	<!-- <split strategyRef="myAggregationStrategyPojo" strategyMethodName="aggregate"> --> <!-- OPTION 2 - strategyMethodName -->
+        	<!-- <split strategyRef="myAggregationStrategyPojo" 
+	        	        strategyMethodName="aggregate"
+	        		    strategyMethodAllowNull="true">	
+	        		 <tokenize token=","/>
+	        		 <to uri="activemq:queue:options"/>
+	        	 </split> --> <!-- OPTION 3 - strategyMethodAllowNull -->
+	       <!-- <split strategyRef="myAggregationStrategy" parallelProcessing="true"> --> <!-- OPTION 4 - parallelProcessing -->
+	       <!-- <split strategyRef="myAggregationStrategy" parallelAggregate="true"> --> <!-- OPTION 5 - parallelAggregate -->
+	       <!-- <split strategyRef="myAggregationStrategy" executorServiceRef="threadPoolExecutor"> --> <!-- OPTION 6 - executorServiceRef -->   
+	       <split strategyRef="myAggregationStrategy" stopOnException="true">   
+	       	   <tokenize token=","/>
+	           <to uri="direct:process"/>
+	       </split>
+	       <!-- <split strategyRef="myAggregationStrategy" streaming="true"> --> <!-- OPTION 8 - streaming -->	
+        </route>
+        <route>
+        	<from uri="direct:process"/>
+        	<process ref="myProcessor"/>
+        </route>
+        <route>
+        	<from uri="activemq:queue:options"/>
+        	<log message="from activemq:queue:options ----------> ${body}"/>
         </route>
     </camelContext>
 </beans>

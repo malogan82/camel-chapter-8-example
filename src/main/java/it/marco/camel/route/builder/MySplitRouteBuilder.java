@@ -9,7 +9,6 @@ import org.apache.camel.builder.xml.XPathBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import it.marco.camel.Test;
 import it.marco.camel.pojo.MyOrderStrategy;
 
 public class MySplitRouteBuilder extends RouteBuilder {
@@ -104,7 +103,7 @@ public class MySplitRouteBuilder extends RouteBuilder {
 		
 		from("activemq:queue:order")
 			.log("from activemq:queue:order ----------> ${body}");
-
+		
 	}
 
 }
