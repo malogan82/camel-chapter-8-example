@@ -2,11 +2,14 @@ package it.marco.camel.route.builder;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.processor.aggregate.UseLatestAggregationStrategy;
+import org.apache.camel.processor.aggregate.UseOriginalAggregationStrategy;
 
-import it.marco.camel.strategy.MyAggregationStrategy;
+import it.marco.camel.processor.MyBeanProcessor;
 
 public class MyAggregatorRouteBuilder extends RouteBuilder {
-
+	
+	private UseOriginalAggregationStrategy useOriginalAggregationStrategy = new UseOriginalAggregationStrategy();
+	
 	@Override
 	public void configure() throws Exception {
 		from("direct:aggregate")
@@ -19,9 +22,13 @@ public class MyAggregatorRouteBuilder extends RouteBuilder {
 		
 		from("direct:aggregateXPath")
 			.log("from direct:aggregateXPath ----------> ${body}")
-			.aggregate(xpath("/order/@number"), new MyAggregationStrategy())
-				.ignoreInvalidCorrelationKeys()
-				.completionTimeout(3000)
+			.bean(new MyBeanProcessor(useOriginalAggregationStrategy))
+			.aggregate(xpath("/order/@number"),useOriginalAggregationStrategy)
+			//.aggregate(xpath("/order/@number"), new MyAggregationStrategy())
+			//.aggregate(xpath("/order/@number"))
+				//.aggregationStrategy(new MyAggregationStrategy())
+			.ignoreInvalidCorrelationKeys()
+			.completionTimeout(3000)
 			.to("direct:aggregatedXPath");
 		
 		from("direct:aggregatedXPath")
