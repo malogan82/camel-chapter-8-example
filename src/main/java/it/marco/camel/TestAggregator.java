@@ -36,12 +36,18 @@ public class TestAggregator {
 		LOGGER.info("MAIN STARTED");
 		CamelContext camelContext = main.getCamelContexts().get(0);
 		ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
-		producerTemplate.sendBodyAndHeader("direct:aggregate","MESSAGE1", "id", "A");
-		producerTemplate.sendBodyAndHeader("direct:aggregate","MESSAGE2", "id", "A");
-		producerTemplate.sendBodyAndHeader("direct:aggregate","MESSAGE1", "id", "B");
-		producerTemplate.sendBodyAndHeader("direct:aggregate","MESSAGE2", "id", "B");
-		producerTemplate.sendBodyAndHeader("direct:aggregate","MESSAGE3", "id", "A");
-		producerTemplate.sendBodyAndHeader("direct:aggregate","MESSAGE3", "id", "B");
+//		producerTemplate.sendBodyAndHeader("direct:aggregate","MESSAGE1", "id", "A");
+//		producerTemplate.sendBodyAndHeader("direct:aggregate","MESSAGE2", "id", "A");
+//		producerTemplate.sendBodyAndHeader("direct:aggregate","MESSAGE1", "id", "B");
+//		producerTemplate.sendBodyAndHeader("direct:aggregate","MESSAGE2", "id", "B");
+//		producerTemplate.sendBodyAndHeader("direct:aggregate","MESSAGE3", "id", "A");
+//		producerTemplate.sendBodyAndHeader("direct:aggregate","MESSAGE3", "id", "B");
+		String order1 = "<order number=\"1\"><name>Marco</name><surname>Longobardi</surname><amount>50</amount></order>";
+		String order2 = "<order number=\"2\"><name>Marco</name><surname>Carletti</surname><amount>100</amount></order>";
+		String order3 = "<order number=\"2\"><name>Nevia</name><surname>Roscigno</surname><amount>150</amount></order>";
+		producerTemplate.sendBody("direct:aggregateXPath",order1);
+		producerTemplate.sendBody("direct:aggregateXPath",order2);
+		producerTemplate.sendBody("direct:aggregateXPath",order3);
 		try {
 			Thread.sleep(10000);
 		} catch (InterruptedException e) {

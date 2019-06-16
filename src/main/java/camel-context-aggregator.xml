@@ -3,20 +3,35 @@
     xmlns:camel="http://camel.apache.org/schema/spring"
     xmlns:prop="http://camel.apache.org/schema/placeholder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans                  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd                 http://camel.apache.org/schema/spring                  http://camel.apache.org/schema/spring/camel-spring.xsd">
-    <bean class="org.apache.camel.processor.aggregate.UseLatestAggregationStrategy" id="aggregatorStrategy"/>
+    <bean
+        class="org.apache.camel.processor.aggregate.UseLatestAggregationStrategy" id="aggregatorStrategy"/>
+    <bean class="it.marco.camel.strategy.MyAggregationStrategy" id="myAggregationStrategy"/>
     <camelContext id="camelContext-6181de96-d9a3-4d14-817d-d295a4a6a151" xmlns="http://camel.apache.org/schema/spring">
-        <route>
-        	<from uri="direct:aggregate"/>	
-        		<aggregate strategyRef="aggregatorStrategy" completionTimeout="3000">
-		            <correlationExpression>
-		                <simple>header.id</simple>
-		            </correlationExpression>
-	            	<to uri="direct:aggregated"/>
-	        	</aggregate>
+        <route id="_route11">
+            <from id="_from1" uri="direct:aggregate"/>
+            <aggregate completionTimeout="3000" id="_aggregate1" strategyRef="aggregatorStrategy">
+                <correlationExpression>
+                    <simple>header.id</simple>
+                </correlationExpression>
+                <to id="_to1" uri="direct:aggregated"/>
+            </aggregate>
+        </route>
+        <route id="_route12">
+            <from id="_from2" uri="direct:aggregated"/>
+            <log id="_log1" message="from direct:aggregated ----------> ${body} for id ${header.id}"/>
         </route>
         <route>
-        	<from uri="direct:aggregated"/>
-        	<log message="from direct:aggregated ----------> ${body} for id ${header.id}"/>
+        	<from uri="direct:aggregateXPath"/>
+        	<aggregate completionTimeout="3000" ignoreInvalidCorrelationKeys="true" strategyRef="myAggregationStrategy">
+        		<correlationExpression>
+        			<xpath>/order/@number</xpath>
+        		</correlationExpression>
+        		<to uri="direct:aggregatedXPath"/>
+        	</aggregate>
+        </route>
+        <route>
+            <from uri="direct:aggregatedXPath"/>
+            <log message="from direct:aggregatedXPath ----------> ${body}"/>
         </route>
     </camelContext>
 </beans>
