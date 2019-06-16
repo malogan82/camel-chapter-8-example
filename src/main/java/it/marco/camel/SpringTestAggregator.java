@@ -1,5 +1,8 @@
 package it.marco.camel;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.main.Main;
@@ -43,9 +46,14 @@ public class SpringTestAggregator {
 //			producerTemplate.sendBody("direct:aggregateXPath",order1);
 //			producerTemplate.sendBody("direct:aggregateXPath",order2);
 //			producerTemplate.sendBody("direct:aggregateXPath",order3);
-			producerTemplate.sendBodyAndHeader("direct:aggregateXPath",order1,"MsgType","OK");
-			producerTemplate.sendBodyAndHeader("direct:aggregateXPath",order2,"MsgType","ALERT");
-			producerTemplate.sendBodyAndHeader("direct:aggregateXPath",order3,"MsgType","OK");
+			Map<String,Object> headers = new HashMap<>();
+			headers.put("MsgType","OK");
+			headers.put("mySize", 3);
+			producerTemplate.sendBodyAndHeaders("direct:aggregateXPath",order1,headers);
+			headers.put("MsgType","ALERT");	
+			producerTemplate.sendBodyAndHeaders("direct:aggregateXPath",order2,headers);
+			headers.put("MsgType","OK");
+			producerTemplate.sendBodyAndHeaders("direct:aggregateXPath",order3,headers);
 			try {
 				Thread.sleep(10000);
 			} catch (InterruptedException e) {

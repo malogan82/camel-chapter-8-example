@@ -20,24 +20,26 @@
             <from id="_from2" uri="direct:aggregated"/>
             <log id="_log1" message="from direct:aggregated ----------> ${body} for id ${header.id}"/>
         </route>
-        <route>
-        	<from uri="direct:aggregateXPath"/>
-        	<aggregate completionTimeout="3000" 
-        			   ignoreInvalidCorrelationKeys="true" 
-        			   strategyRef="myAggregationStrategy"
-        			   eagerCheckCompletion="true">
-        		<correlationExpression>
-        			<xpath>/order/@number</xpath>
-        		</correlationExpression>
-        		<completionPredicate>
+        <route id="_route13">
+            <from id="_from3" uri="direct:aggregateXPath"/>
+            <aggregate completionTimeout="3000"
+                eagerCheckCompletion="true" id="_aggregate2"
+                ignoreInvalidCorrelationKeys="true" strategyRef="myAggregationStrategy">
+                <correlationExpression>
+                    <xpath>/order/@number</xpath>
+                </correlationExpression>
+                <completionPredicate>
                     <simple>${header.MsgType} == 'ALERT'</simple>
-      			</completionPredicate>
-        		<to uri="direct:aggregatedXPath"/>
-        	</aggregate>
+                </completionPredicate>
+                <completionSize>
+                	<header>mySize</header>
+                </completionSize>
+                <to id="_to2" uri="direct:aggregatedXPath"/>
+            </aggregate>
         </route>
-        <route>
-            <from uri="direct:aggregatedXPath"/>
-            <log message="from direct:aggregatedXPath ----------> ${body}"/>
+        <route id="_route14">
+            <from id="_from4" uri="direct:aggregatedXPath"/>
+            <log id="_log2" message="from direct:aggregatedXPath ----------> ${body}"/>
         </route>
     </camelContext>
 </beans>
