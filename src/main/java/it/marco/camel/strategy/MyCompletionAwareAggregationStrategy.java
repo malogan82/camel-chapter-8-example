@@ -1,13 +1,13 @@
 package it.marco.camel.strategy;
 
 import org.apache.camel.Exchange;
-import org.apache.camel.processor.aggregate.TimeoutAwareAggregationStrategy;
+import org.apache.camel.processor.aggregate.CompletionAwareAggregationStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MyTimeoutAwareAggregationStrategy implements TimeoutAwareAggregationStrategy {
+public class MyCompletionAwareAggregationStrategy implements CompletionAwareAggregationStrategy {
 	
-	public static Logger LOGGER = LoggerFactory.getLogger(MyTimeoutAwareAggregationStrategy.class);
+	public static Logger LOGGER = LoggerFactory.getLogger(MyCompletionAwareAggregationStrategy.class);
 
 	@Override
 	public Exchange aggregate(Exchange oldExchange, Exchange newExchange) {
@@ -22,8 +22,8 @@ public class MyTimeoutAwareAggregationStrategy implements TimeoutAwareAggregatio
 	}
 
 	@Override
-	public void timeout(Exchange oldExchange, int index, int total, long timeout) {
-		LOGGER.info("--------------------> MyTimeoutAwareAggregationStrategy.timeout");
+	public void onCompletion(Exchange exchange) {
+		LOGGER.info("--------------------> MyCompletionAwareAggregationStrategy.onCompletion");
 	}
 
 }

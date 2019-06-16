@@ -11,6 +11,9 @@ import org.apache.camel.processor.aggregate.UseOriginalAggregationStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import it.marco.camel.strategy.MyAggregationStrategy;
+import it.marco.camel.strategy.MyCompletionAwareAggregationStrategy;
+
 public class MyAggregatorRouteBuilder extends RouteBuilder {
 	
 	public static Logger LOGGER = LoggerFactory.getLogger(MyAggregatorRouteBuilder.class);
@@ -29,10 +32,11 @@ public class MyAggregatorRouteBuilder extends RouteBuilder {
 		
 		from("direct:aggregateXPath")
 			.log("from direct:aggregateXPath ----------> ${body}")
-			.aggregate(xpath("/order/@number"),new GroupedExchangeAggregationStrategy())
+			//.aggregate(xpath("/order/@number"),new MyCompletionAwareAggregationStrategy())
+			//.aggregate(xpath("/order/@number"),new GroupedExchangeAggregationStrategy())
 			//.bean(new MyBeanProcessor(useOriginalAggregationStrategy))
 			//.aggregate(xpath("/order/@number"),useOriginalAggregationStrategy)
-			//.aggregate(xpath("/order/@number"), new MyAggregationStrategy())
+			.aggregate(xpath("/order/@number"), new MyAggregationStrategy())
 			//.aggregate(xpath("/order/@number"))
 				//.aggregationStrategy(new MyAggregationStrategy())
 			.ignoreInvalidCorrelationKeys()
@@ -40,16 +44,16 @@ public class MyAggregatorRouteBuilder extends RouteBuilder {
 			.to("direct:aggregatedXPath");
 		
 		from("direct:aggregatedXPath")
-			//.log("from direct:aggregatedXPath ----------> ${body}");
-			.process(new Processor() {
-				@Override
-				public void process(Exchange exchange) throws Exception {
-					List<Exchange> aggregatedList = exchange.getProperty(Exchange.GROUPED_EXCHANGE,List.class);
-					for(Exchange aggregated:aggregatedList) {
-						LOGGER.info(String.format("from direct:aggregatedXPath ---------->  %s", aggregated.getIn().getBody(String.class)));
-					}
-				}
-			});
+			.log("from direct:aggregatedXPath ----------> ${body}");
+//			.process(new Processor() {
+//				@Override
+//				public void process(Exchange exchange) throws Exception {
+//					List<Exchange> aggregatedList = exchange.getProperty(Exchange.GROUPED_EXCHANGE,List.class);
+//					for(Exchange aggregated:aggregatedList) {
+//						LOGGER.info(String.format("from direct:aggregatedXPath ---------->  %s", aggregated.getIn().getBody(String.class)));
+//					}
+//				}
+//			});
 
 	}
 
