@@ -1,12 +1,19 @@
 package it.marco.camel.route.builder;
 
+import java.util.List;
+
+import org.apache.camel.Exchange;
+import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
 import org.apache.camel.processor.aggregate.UseLatestAggregationStrategy;
 import org.apache.camel.processor.aggregate.UseOriginalAggregationStrategy;
-
-import it.marco.camel.processor.MyBeanProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MyAggregatorRouteBuilder extends RouteBuilder {
+	
+	public static Logger LOGGER = LoggerFactory.getLogger(MyAggregatorRouteBuilder.class);
 	
 	private UseOriginalAggregationStrategy useOriginalAggregationStrategy = new UseOriginalAggregationStrategy();
 	
@@ -22,8 +29,9 @@ public class MyAggregatorRouteBuilder extends RouteBuilder {
 		
 		from("direct:aggregateXPath")
 			.log("from direct:aggregateXPath ----------> ${body}")
-			.bean(new MyBeanProcessor(useOriginalAggregationStrategy))
-			.aggregate(xpath("/order/@number"),useOriginalAggregationStrategy)
+			.aggregate(xpath("/order/@number"),new GroupedExchangeAggregationStrategy())
+			//.bean(new MyBeanProcessor(useOriginalAggregationStrategy))
+			//.aggregate(xpath("/order/@number"),useOriginalAggregationStrategy)
 			//.aggregate(xpath("/order/@number"), new MyAggregationStrategy())
 			//.aggregate(xpath("/order/@number"))
 				//.aggregationStrategy(new MyAggregationStrategy())
@@ -32,7 +40,16 @@ public class MyAggregatorRouteBuilder extends RouteBuilder {
 			.to("direct:aggregatedXPath");
 		
 		from("direct:aggregatedXPath")
-			.log("from direct:aggregatedXPath ----------> ${body}");
+			//.log("from direct:aggregatedXPath ----------> ${body}");
+			.process(new Processor() {
+				@Override
+				public void process(Exchange exchange) throws Exception {
+					List<Exchange> aggregatedList = exchange.getProperty(Exchange.GROUPED_EXCHANGE,List.class);
+					for(Exchange aggregated:aggregatedList) {
+						LOGGER.info(String.format("from direct:aggregatedXPath ---------->  %s", aggregated.getIn().getBody(String.class)));
+					}
+				}
+			});
 
 	}
 
