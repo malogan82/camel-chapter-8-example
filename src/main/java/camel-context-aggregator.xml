@@ -22,10 +22,16 @@
         </route>
         <route>
         	<from uri="direct:aggregateXPath"/>
-        	<aggregate completionTimeout="3000" ignoreInvalidCorrelationKeys="true" strategyRef="myAggregationStrategy">
+        	<aggregate completionTimeout="3000" 
+        			   ignoreInvalidCorrelationKeys="true" 
+        			   strategyRef="myAggregationStrategy"
+        			   eagerCheckCompletion="true">
         		<correlationExpression>
         			<xpath>/order/@number</xpath>
         		</correlationExpression>
+        		<completionPredicate>
+                    <simple>${header.MsgType} == 'ALERT'</simple>
+      			</completionPredicate>
         		<to uri="direct:aggregatedXPath"/>
         	</aggregate>
         </route>

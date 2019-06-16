@@ -37,6 +37,8 @@ public class MyAggregatorRouteBuilder extends RouteBuilder {
 			//.bean(new MyBeanProcessor(useOriginalAggregationStrategy))
 			//.aggregate(xpath("/order/@number"),useOriginalAggregationStrategy)
 			.aggregate(xpath("/order/@number"), new MyAggregationStrategy())
+			.completionPredicate(header("MsgType").isEqualTo("ALERT"))
+			.eagerCheckCompletion()
 			//.aggregate(xpath("/order/@number"))
 				//.aggregationStrategy(new MyAggregationStrategy())
 			.ignoreInvalidCorrelationKeys()

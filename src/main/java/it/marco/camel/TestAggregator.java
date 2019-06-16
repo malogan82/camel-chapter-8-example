@@ -45,9 +45,12 @@ public class TestAggregator {
 		String order1 = "<order number=\"1\"><name>Marco</name><surname>Longobardi</surname><amount>50</amount></order>";
 		String order2 = "<order number=\"2\"><name>Marco</name><surname>Carletti</surname><amount>100</amount></order>";
 		String order3 = "<order number=\"2\"><name>Nevia</name><surname>Roscigno</surname><amount>150</amount></order>";
-		producerTemplate.sendBody("direct:aggregateXPath",order1);
-		producerTemplate.sendBody("direct:aggregateXPath",order2);
-		producerTemplate.sendBody("direct:aggregateXPath",order3);
+//		producerTemplate.sendBody("direct:aggregateXPath",order1);
+//		producerTemplate.sendBody("direct:aggregateXPath",order2);
+//		producerTemplate.sendBody("direct:aggregateXPath",order3);
+		producerTemplate.sendBodyAndHeader("direct:aggregateXPath",order1,"MsgType","OK");
+		producerTemplate.sendBodyAndHeader("direct:aggregateXPath",order2,"MsgType","ALERT");
+		producerTemplate.sendBodyAndHeader("direct:aggregateXPath",order3,"MsgType","OK");
 		try {
 			Thread.sleep(10000);
 		} catch (InterruptedException e) {
