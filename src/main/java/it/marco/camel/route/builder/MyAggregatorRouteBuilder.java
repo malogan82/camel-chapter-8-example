@@ -1,24 +1,22 @@
 package it.marco.camel.route.builder;
 
-import java.util.List;
-
-import org.apache.camel.Exchange;
-import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.processor.aggregate.GroupedExchangeAggregationStrategy;
+import org.apache.camel.processor.aggregate.AggregateController;
+import org.apache.camel.processor.aggregate.DefaultAggregateController;
 import org.apache.camel.processor.aggregate.UseLatestAggregationStrategy;
 import org.apache.camel.processor.aggregate.UseOriginalAggregationStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.marco.camel.strategy.MyAggregationStrategy;
-import it.marco.camel.strategy.MyCompletionAwareAggregationStrategy;
 
 public class MyAggregatorRouteBuilder extends RouteBuilder {
 	
 	public static Logger LOGGER = LoggerFactory.getLogger(MyAggregatorRouteBuilder.class);
 	
 	private UseOriginalAggregationStrategy useOriginalAggregationStrategy = new UseOriginalAggregationStrategy();
+	
+	private AggregateController controller = new DefaultAggregateController();
 	
 	@Override
 	public void configure() throws Exception {
@@ -36,10 +34,10 @@ public class MyAggregatorRouteBuilder extends RouteBuilder {
 			//.aggregate(xpath("/order/@number"),new GroupedExchangeAggregationStrategy())
 			//.bean(new MyBeanProcessor(useOriginalAggregationStrategy))
 			//.aggregate(xpath("/order/@number"),useOriginalAggregationStrategy)
-			.aggregate(xpath("/order/@number"), new MyAggregationStrategy())
-			.completionSize(header("mySize"))
-			.completionPredicate(header("MsgType").isEqualTo("ALERT"))
-			.eagerCheckCompletion()
+			.aggregate(xpath("/order/@number"), new MyAggregationStrategy(controller))
+			//.completionSize(header("mySize"))
+			//.completionPredicate(header("MsgType").isEqualTo("ALERT"))
+			//.eagerCheckCompletion()
 			//.aggregate(xpath("/order/@number"))
 				//.aggregationStrategy(new MyAggregationStrategy())
 			.ignoreInvalidCorrelationKeys()
@@ -57,7 +55,7 @@ public class MyAggregatorRouteBuilder extends RouteBuilder {
 //					}
 //				}
 //			});
-
+		
 	}
 
 }

@@ -48,17 +48,17 @@ public class TestAggregator {
 		String order1 = "<order number=\"1\"><name>Marco</name><surname>Longobardi</surname><amount>50</amount></order>";
 		String order2 = "<order number=\"2\"><name>Marco</name><surname>Carletti</surname><amount>100</amount></order>";
 		String order3 = "<order number=\"2\"><name>Nevia</name><surname>Roscigno</surname><amount>150</amount></order>";
-//		producerTemplate.sendBody("direct:aggregateXPath",order1);
-//		producerTemplate.sendBody("direct:aggregateXPath",order2);
-//		producerTemplate.sendBody("direct:aggregateXPath",order3);
-		Map<String,Object> headers = new HashMap<>();
-		headers.put("MsgType","OK");
-		headers.put("mySize", 3);
-		producerTemplate.sendBodyAndHeaders("direct:aggregateXPath",order1,headers);
-		headers.put("MsgType","ALERT");	
-		producerTemplate.sendBodyAndHeaders("direct:aggregateXPath",order2,headers);
-		headers.put("MsgType","OK");
-		producerTemplate.sendBodyAndHeaders("direct:aggregateXPath",order3,headers);
+		producerTemplate.sendBody("direct:aggregateXPath",order1);
+		producerTemplate.sendBody("direct:aggregateXPath",order2);
+		producerTemplate.sendBody("direct:aggregateXPath",order3);
+//		Map<String,Object> headers = new HashMap<>();
+//		headers.put("MsgType","OK");
+//		headers.put("mySize", 3);
+//		producerTemplate.sendBodyAndHeaders("direct:aggregateXPath",order1,headers);
+//		headers.put("MsgType","ALERT");	
+//		producerTemplate.sendBodyAndHeaders("direct:aggregateXPath",order2,headers);
+//		headers.put("MsgType","OK");
+//		producerTemplate.sendBodyAndHeaders("direct:aggregateXPath",order3,headers);
 		try {
 			Thread.sleep(10000);
 		} catch (InterruptedException e) {
