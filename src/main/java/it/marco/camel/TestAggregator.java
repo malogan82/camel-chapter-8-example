@@ -1,6 +1,7 @@
 package it.marco.camel;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.activemq.artemis.jms.client.ActiveMQJMSConnectionFactory;
@@ -48,9 +49,9 @@ public class TestAggregator {
 		String order1 = "<order number=\"1\"><name>Marco</name><surname>Longobardi</surname><amount>50</amount></order>";
 		String order2 = "<order number=\"2\"><name>Marco</name><surname>Carletti</surname><amount>100</amount></order>";
 		String order3 = "<order number=\"2\"><name>Nevia</name><surname>Roscigno</surname><amount>150</amount></order>";
-		producerTemplate.sendBody("direct:aggregateXPath",order1);
-		producerTemplate.sendBody("direct:aggregateXPath",order2);
-		producerTemplate.sendBody("direct:aggregateXPath",order3);
+//		producerTemplate.sendBody("direct:aggregateXPath",order1);
+//		producerTemplate.sendBody("direct:aggregateXPath",order2);
+//		producerTemplate.sendBody("direct:aggregateXPath",order3);
 //		Map<String,Object> headers = new HashMap<>();
 //		headers.put("MsgType","OK");
 //		headers.put("mySize", 3);
@@ -59,6 +60,19 @@ public class TestAggregator {
 //		producerTemplate.sendBodyAndHeaders("direct:aggregateXPath",order2,headers);
 //		headers.put("MsgType","OK");
 //		producerTemplate.sendBodyAndHeaders("direct:aggregateXPath",order3,headers);
+		String xmlBody = "<persons>"
+							+"<person>James</person>"
+							+ "<person>Claus</person>"
+							+ "<person>Jonathan</person>"
+							+ "<person>Hadrian</person>"
+					   + "</persons>";
+		List<String> names = producerTemplate.requestBodyAndHeader("direct:tokenizeXml",xmlBody,"foo","<person>",List.class);
+        for(String name:names) {
+			LOGGER.info(String.format("name ----------> %s",name));
+		}
+        producerTemplate.sendBodyAndHeader("direct:start",order1,"StockSymbol","1");
+        producerTemplate.sendBodyAndHeader("direct:start",order2,"StockSymbol","1");
+        producerTemplate.sendBodyAndHeader("direct:start",order3,"StockSymbol","2");
 		try {
 			Thread.sleep(10000);
 		} catch (InterruptedException e) {
