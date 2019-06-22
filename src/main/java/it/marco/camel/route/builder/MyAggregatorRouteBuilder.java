@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.marco.camel.strategy.MyAggregationStrategy;
+import it.marco.camel.strategy.MyListOfNumbersStrategy;
 import it.marco.camel.strategy.MySimpleAggregationStrategy;
 
 public class MyAggregatorRouteBuilder extends RouteBuilder {
@@ -131,6 +132,15 @@ public class MyAggregatorRouteBuilder extends RouteBuilder {
 		
 		from("direct:aggregated-parallel-processing")
 			.log("from direct:aggregated-parallel-processing ----------> ${body}");
+		
+		from("direct:start-list")
+			.aggregate(header("id"), new MyListOfNumbersStrategy())
+		        .completionTimeout(3000)
+		        .executorService(threadPoolExecutor)
+		    .to("direct:aggregated-list");
+		
+		from("direct:aggregated-list")
+			.log("from direct:aggregated-list ----------> ${body}");
 		
 	}
 

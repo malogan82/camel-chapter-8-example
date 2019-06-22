@@ -79,6 +79,9 @@ public class TestAggregator {
         producerTemplate.sendBodyAndHeader("direct:start-parallel-processing",order1,"id","1");
         producerTemplate.sendBodyAndHeader("direct:start-parallel-processing",order2,"id","2");
         producerTemplate.sendBodyAndHeader("direct:start-parallel-processing",order3,"id","2");
+        producerTemplate.sendBodyAndHeader("direct:start-list",1,"id","1");
+        producerTemplate.sendBodyAndHeader("direct:start-list",2,"id","2");
+        producerTemplate.sendBodyAndHeader("direct:start-list",3,"id","2");
         try {
 			Thread.sleep(10000);
 		} catch (InterruptedException e) {
