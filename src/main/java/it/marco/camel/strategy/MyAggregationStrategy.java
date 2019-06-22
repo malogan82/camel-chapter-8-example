@@ -37,12 +37,12 @@ public class MyAggregationStrategy implements AggregationStrategy, Service {
 	
 	@Override
 	public void start() throws Exception {
-		LOGGER.info("--------------------> MyCompletionAwareAggregationStrategy.start");	
+		LOGGER.info("--------------------> MyAggregationStrategy.start");	
 	}
 
 	@Override
 	public void stop() throws Exception {
-		LOGGER.info("--------------------> MyCompletionAwareAggregationStrategy.stop");	
+		LOGGER.info("--------------------> MyAggregationStrategy.stop");	
 	}
 
 }

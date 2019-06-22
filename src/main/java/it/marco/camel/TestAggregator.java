@@ -73,7 +73,13 @@ public class TestAggregator {
         producerTemplate.sendBodyAndHeader("direct:start",order1,"StockSymbol","1");
         producerTemplate.sendBodyAndHeader("direct:start",order2,"StockSymbol","1");
         producerTemplate.sendBodyAndHeader("direct:start",order3,"StockSymbol","2");
-		try {
+        producerTemplate.sendBodyAndHeader("direct:start-hawtdb",order1,"id","1");
+        producerTemplate.sendBodyAndHeader("direct:start-hawtdb",order2,"id","2");
+        producerTemplate.sendBodyAndHeader("direct:start-hawtdb",order3,"id","2");
+        producerTemplate.sendBodyAndHeader("direct:start-parallel-processing",order1,"id","1");
+        producerTemplate.sendBodyAndHeader("direct:start-parallel-processing",order2,"id","2");
+        producerTemplate.sendBodyAndHeader("direct:start-parallel-processing",order3,"id","2");
+        try {
 			Thread.sleep(10000);
 		} catch (InterruptedException e) {
 			LOGGER.error(e.getMessage(),e);
