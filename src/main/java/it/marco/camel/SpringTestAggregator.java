@@ -54,6 +54,9 @@ public class SpringTestAggregator {
 			producerTemplate.sendBodyAndHeaders("direct:aggregateXPath",order2,headers);
 			headers.put("MsgType","OK");
 			producerTemplate.sendBodyAndHeaders("direct:aggregateXPath",order3,headers);
+			producerTemplate.sendBody("direct:start-aggregate",order1);
+	        producerTemplate.sendBody("direct:start-aggregate",order2);
+	        producerTemplate.sendBody("direct:start-aggregate",order3);
 			try {
 				Thread.sleep(10000);
 			} catch (InterruptedException e) {

@@ -5,7 +5,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans                  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd                 http://camel.apache.org/schema/spring                  http://camel.apache.org/schema/spring/camel-spring.xsd">
     <bean
         class="org.apache.camel.processor.aggregate.UseLatestAggregationStrategy" id="aggregatorStrategy"/>
-    <bean class="it.marco.camel.strategy.MyAggregationStrategy" id="myAggregationStrategy"/>
+    <bean class="it.marco.camel.strategy.MySimpleAggregationStrategy" id="myAggregationStrategy"/>
     <camelContext id="camelContext-6181de96-d9a3-4d14-817d-d295a4a6a151" xmlns="http://camel.apache.org/schema/spring">
         <route id="_route11">
             <from id="_from1" uri="direct:aggregate"/>
@@ -32,7 +32,7 @@
                     <simple>${header.MsgType} == 'ALERT'</simple>
                 </completionPredicate>
                 <completionSize>
-                	<header>mySize</header>
+                    <header>mySize</header>
                 </completionSize>
                 <to id="_to2" uri="direct:aggregatedXPath"/>
             </aggregate>
@@ -40,6 +40,18 @@
         <route id="_route14">
             <from id="_from4" uri="direct:aggregatedXPath"/>
             <log id="_log2" message="from direct:aggregatedXPath ----------> ${body}"/>
+        </route>
+        <route id="_route15">
+            <from id="_from5" uri="direct:start-aggregate"/>
+            <aggregate completionSize="2" completionTimeout="3000"
+                eagerCheckCompletion="true"
+                forceCompletionOnStop="false" groupExchanges="true" id="_aggregate3"
+                closeCorrelationKeyOnCompletion="5">
+                <correlationExpression>
+                    <xpath>/order/@number</xpath>
+                </correlationExpression>
+                <log id="_log3" message="from direct:start-aggregate ----------> ${body}"/>
+            </aggregate>
         </route>
     </camelContext>
 </beans>
