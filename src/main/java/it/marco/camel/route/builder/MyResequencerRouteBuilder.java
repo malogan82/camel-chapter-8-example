@@ -1,6 +1,7 @@
 package it.marco.camel.route.builder;
 
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.model.config.BatchResequencerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +17,13 @@ public class MyResequencerRouteBuilder extends RouteBuilder {
 		
 		from("direct:mock-result").
 			log("from direct:mock-result ----------> ${body}");
+		
+		from("direct:start-resequencer").
+			resequence(header("TimeStamp")).
+			batch(new BatchResequencerConfig(300,4000L)).
+			allowDuplicates().
+			reverse().
+			to("direct:mock-result");
 		
 	}
 

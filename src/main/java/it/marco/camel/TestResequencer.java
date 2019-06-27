@@ -29,11 +29,17 @@ public class TestResequencer {
 		LOGGER.info("MAIN STARTED");
 		CamelContext camelContext = main.getCamelContexts().get(0);
 		ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
-		producerTemplate.sendBodyAndHeader("direct:start","Marco","TimeStamp",1);
-		producerTemplate.sendBodyAndHeader("direct:start","Antonio","TimeStamp",2);
-		producerTemplate.sendBodyAndHeader("direct:start","Giuseppe","TimeStamp",5);
-		producerTemplate.sendBodyAndHeader("direct:start","Vincenzo","TimeStamp",3);
-		producerTemplate.sendBodyAndHeader("direct:start","Francesco","TimeStamp",4);
+//		producerTemplate.sendBodyAndHeader("direct:start","Marco","TimeStamp",1);
+//		producerTemplate.sendBodyAndHeader("direct:start","Antonio","TimeStamp",2);
+//		producerTemplate.sendBodyAndHeader("direct:start","Giuseppe","TimeStamp",5);
+//		producerTemplate.sendBodyAndHeader("direct:start","Vincenzo","TimeStamp",3);
+//		producerTemplate.sendBodyAndHeader("direct:start","Francesco","TimeStamp",4);
+		producerTemplate.sendBodyAndHeader("direct:start-resequencer","Marco","TimeStamp",1);
+		producerTemplate.sendBodyAndHeader("direct:start-resequencer","Antonio","TimeStamp",2);
+		producerTemplate.sendBodyAndHeader("direct:start-resequencer","Giuseppe","TimeStamp",5);
+		producerTemplate.sendBodyAndHeader("direct:start-resequencer","Vincenzo","TimeStamp",3);
+		producerTemplate.sendBodyAndHeader("direct:start-resequencer","Francesco","TimeStamp",4);
+		producerTemplate.sendBodyAndHeader("direct:start-resequencer","Fabio","TimeStamp",5);
 		try {
 			Thread.sleep(10000);
 			main.stop();
