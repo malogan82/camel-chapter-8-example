@@ -48,12 +48,32 @@ public class TestResequencer {
 //		producerTemplate.sendBodyAndHeader("direct:start-resequencer","Vincenzo","TimeStamp",3);
 //		producerTemplate.sendBodyAndHeader("direct:start-resequencer","Francesco","TimeStamp",4);
 //		producerTemplate.sendBodyAndHeader("direct:start-resequencer","Fabio","TimeStamp",5);
-		producerTemplate.sendBody("jms:queue:foo","Marco");
-		producerTemplate.sendBody("jms:queue:foo","Antonio");
-		producerTemplate.sendBody("jms:queue:foo","Giuseppe");
-		producerTemplate.sendBody("jms:queue:foo","Vincenzo");
-		producerTemplate.sendBody("jms:queue:foo","Francesco");
-		producerTemplate.sendBody("jms:queue:foo","Fabio");
+//		producerTemplate.sendBody("jms:queue:foo","Marco");
+//		producerTemplate.sendBody("jms:queue:foo","Antonio");
+//		producerTemplate.sendBody("jms:queue:foo","Giuseppe");
+//		producerTemplate.sendBody("jms:queue:foo","Vincenzo");
+//		producerTemplate.sendBody("jms:queue:foo","Francesco");
+//		producerTemplate.sendBody("jms:queue:foo","Fabio");
+//		producerTemplate.sendBodyAndHeader("direct:start-stream","Marco","seqnum",1);
+//		producerTemplate.sendBodyAndHeader("direct:start-stream","Antonio","seqnum",2);
+//		producerTemplate.sendBodyAndHeader("direct:start-stream","Giuseppe","seqnum",5);
+//		producerTemplate.sendBodyAndHeader("direct:start-stream","Vincenzo","seqnum",3);
+//		producerTemplate.sendBodyAndHeader("direct:start-stream","Francesco","seqnum",4);
+//		producerTemplate.sendBodyAndHeader("direct:start-stream-resequencer","Marco","seqnum",1);
+//		producerTemplate.sendBodyAndHeader("direct:start-stream-resequencer","Antonio","seqnum",2);
+//		producerTemplate.sendBodyAndHeader("direct:start-stream-resequencer","Giuseppe","seqnum",5);
+//		try {
+//			Thread.sleep(6000);
+//		} catch (Exception e) {
+//			LOGGER.error(e.getMessage(),e);
+//		}
+//		producerTemplate.sendBodyAndHeader("direct:start-stream-resequencer","Vincenzo","seqnum",3);
+//		producerTemplate.sendBodyAndHeader("direct:start-stream-resequencer","Francesco","seqnum",4);
+		producerTemplate.sendBodyAndHeader("direct:start-stream-resequencer-comparator","Marco","seqnum","A");
+		producerTemplate.sendBodyAndHeader("direct:start-stream-resequencer-comparator","Antonio","seqnum","B");
+ 		producerTemplate.sendBodyAndHeader("direct:start-stream-resequencer-comparator","Giuseppe","seqnum","E");
+ 		producerTemplate.sendBodyAndHeader("direct:start-stream-resequencer-comparator","Vincenzo","seqnum","C");
+		producerTemplate.sendBodyAndHeader("direct:start-stream-resequencer-comparator","Francesco","seqnum","D");
 		try {
 			Thread.sleep(10000);
 			main.stop();
