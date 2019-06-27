@@ -25,6 +25,14 @@ public class MyResequencerRouteBuilder extends RouteBuilder {
 			reverse().
 			to("direct:mock-result");
 		
+		from("jms:queue:foo").
+			resequence(header("JMSPriority")).
+			batch().
+			timeout(3000).
+			allowDuplicates().
+			reverse().
+			to("direct:mock-result");
+		
 	}
 
 	
