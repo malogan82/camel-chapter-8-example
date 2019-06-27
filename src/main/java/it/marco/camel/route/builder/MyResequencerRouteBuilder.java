@@ -39,6 +39,8 @@ public class MyResequencerRouteBuilder extends RouteBuilder {
 		from("direct:start-stream-resequencer").
 			resequence(header("seqnum")).
 			stream(new StreamResequencerConfig(5000, 4000L)).
+			ignoreInvalidExchanges().
+			rejectOld().
 			to("direct:mock-result");
 		
 		from("direct:start-stream-resequencer-comparator").
