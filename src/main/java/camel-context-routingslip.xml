@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:prop="http://camel.apache.org/schema/placeholder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans                  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd                 http://camel.apache.org/schema/spring                  http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <camelContext id="camelContext-6181de96-d9a3-4d14-817d-d295a4a6a151" xmlns="http://camel.apache.org/schema/spring">
+        <route id="_route24">
+            <from id="_from1" uri="direct:b"/>
+            <routingSlip id="_routingSlip1">
+                <header>aRoutingSlipHeader</header>
+            </routingSlip>
+        </route>
+        <route id="_route25">
+            <from id="_from2" uri="direct:c"/>
+            <routingSlip id="_routingSlip2" uriDelimiter="#">
+                <header>aRoutingSlipHeader</header>
+            </routingSlip>
+        </route>
+        <route id="_route26">
+            <from id="_from3" uri="direct:first"/>
+            <log id="_log1" message="from direct:first ----------> ${body}"/>
+            <transform id="_transform1">
+                <simple>${body}+FIRST</simple>
+            </transform>
+        </route>
+        <route id="_route27">
+            <from id="_from4" uri="direct:second"/>
+            <log id="_log2" message="from direct:second ----------> ${body}"/>
+            <transform id="_transform2">
+                <simple>${body}+SECOND</simple>
+            </transform>
+        </route>
+        <route id="_route28">
+            <from id="_from5" uri="direct:third"/>
+            <log id="_log3" message="from direct:third ----------> ${body}"/>
+            <transform id="_transform3">
+                <simple>${body}+THIRD</simple>
+            </transform>
+        </route>
+    </camelContext>
+</beans>
