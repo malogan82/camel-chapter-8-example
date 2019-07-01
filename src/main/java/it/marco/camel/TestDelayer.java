@@ -6,16 +6,16 @@ import org.apache.camel.main.Main;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import it.marco.camel.route.builder.MyThrottleRouteBuilder;
+import it.marco.camel.route.builder.MyDelayerRouteBuilder;
 import it.marco.camel.runnable.MyRunnable;
 
-public class TestThrottle {
+public class TestDelayer {
 	
-	public static Logger LOGGER = LoggerFactory.getLogger(TestThrottle.class);
+	public static Logger LOGGER = LoggerFactory.getLogger(TestDelayer.class);
 
 	public static void main(String[] args) {
 		Main main = new Main();
-		main.addRouteBuilder(new MyThrottleRouteBuilder());
+		main.addRouteBuilder(new MyDelayerRouteBuilder());
 		MyRunnable runnable = new MyRunnable(main);
 		Thread thread = new Thread(runnable);
 		thread.run();
@@ -27,10 +27,7 @@ public class TestThrottle {
 		LOGGER.info("MAIN STARTED");
 		CamelContext camelContext = main.getCamelContexts().get(0);
 		ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
-		for(int i=0;i<=100;i++) {
-			String body = "TEST"+(i+1);
-			producerTemplate.sendBody("seda:d",body);
-		}
+		producerTemplate.sendBody("direct:start","TEST");
 		try {
 			Thread.sleep(10000);
 			main.stop();
