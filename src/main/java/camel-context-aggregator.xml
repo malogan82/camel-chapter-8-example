@@ -43,10 +43,10 @@
         </route>
         <route id="_route15">
             <from id="_from5" uri="direct:start-aggregate"/>
-            <aggregate completionSize="2" completionTimeout="3000"
+            <aggregate closeCorrelationKeyOnCompletion="5"
+                completionSize="2" completionTimeout="3000"
                 eagerCheckCompletion="true"
-                forceCompletionOnStop="false" groupExchanges="true" id="_aggregate3"
-                closeCorrelationKeyOnCompletion="5">
+                forceCompletionOnStop="false" groupExchanges="true" id="_aggregate3">
                 <correlationExpression>
                     <xpath>/order/@number</xpath>
                 </correlationExpression>

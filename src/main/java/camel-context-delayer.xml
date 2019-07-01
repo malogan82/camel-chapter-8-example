@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:prop="http://camel.apache.org/schema/placeholder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans                  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd                 http://camel.apache.org/schema/spring                  http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <bean
+        class="org.apache.activemq.artemis.jms.client.ActiveMQJMSConnectionFactory" id="connectionFactory">
+        <constructor-arg name="uri" value="tcp://localhost:61616"/>
+        <constructor-arg name="user" value="admin"/>
+        <constructor-arg name="password" value="admin"/>
+    </bean>
+    <bean class="org.apache.activemq.camel.component.ActiveMQComponent" id="activemq">
+        <property name="connectionFactory" ref="connectionFactory"/>
+    </bean>
+    <bean class="java.util.concurrent.Executors"
+        factory-method="newScheduledThreadPool" id="scheduledExecutorService">
+        <constructor-arg type="int" value="2"/>
+    </bean>
+    <camelContext id="camelContext-6181de96-d9a3-4d14-817d-d295a4a6a151" xmlns="http://camel.apache.org/schema/spring">
+        <route>
+	        <from uri="seda:a"/>
+	        <delay>
+	            <header>MyDelay</header>
+	        </delay>
+	        <to uri="direct:mock-result"/>
+	    </route>
+	    <route>
+	        <from uri="seda:b"/>
+	        <delay>
+	            <constant>10000</constant>
+	        </delay>
+	        <to uri="direct:mock-result"/>
+	    </route>
+	    <route>
+	    	<from uri="direct:mock-result"/>
+	    	<log message="from direct:mock-result ----------> ${body}"/>
+	    </route>
+	    <route>
+		   <from uri="activemq:queue:foo-queue"/>
+		   <delay asyncDelayed="true" executorServiceRef="scheduledExecutorService" callerRunsWhenRejected="true">
+		       <constant>1000</constant>
+		   </delay>
+		   <to uri="activemq:aDealyedQueue"/>
+		</route>
+		<route>
+	    	<from uri="activemq:aDealyedQueue"/>
+	    	<log message="from activemq:aDealyedQueue ----------> ${body}"/>
+	    </route>
+    </camelContext>
+</beans>

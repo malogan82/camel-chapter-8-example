@@ -11,12 +11,12 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import it.marco.camel.runnable.MyRunnable;
 
-public class SpringTestThrottle {
+public class SpringTestDelayer {
 	
-	public static Logger LOGGER = LoggerFactory.getLogger(SpringTestThrottle.class);
+	public static Logger LOGGER = LoggerFactory.getLogger(SpringTestDelayer.class);
 	
 	public static void main(String[] args) {
-		AbstractXmlApplicationContext appContext = new ClassPathXmlApplicationContext("camel-context-throttle.xml");
+		AbstractXmlApplicationContext appContext = new ClassPathXmlApplicationContext("camel-context-delayer.xml");
 		try {
 			CamelContext camelContext = SpringCamelContext.springCamelContext(appContext);
 			Main main = new Main();
@@ -31,10 +31,11 @@ public class SpringTestThrottle {
 			}
 			LOGGER.info("MAIN STARTED");
 			ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
-			for(int i=0;i<=100;i++) {
-				String body = "TEST"+(i+1);
-				producerTemplate.sendBody("seda:d",body);
-			}
+			String response = producerTemplate.requestBody("seda:b","TEST",String.class);
+			LOGGER.info("response ----------> "+response);
+			response = producerTemplate.requestBodyAndHeader("seda:a","TEST","MyDelay","15000",String.class);
+			LOGGER.info("response ----------> "+response);
+			producerTemplate.sendBody("activemq:queue:foo-queue","TEST");
 			try {
 				Thread.sleep(10000);
 				main.stop();

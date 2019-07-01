@@ -43,11 +43,6 @@ public class SpringTestRoutingSlip {
 			} catch (Exception e) {
 				LOGGER.error(e.getMessage(),e);
 			}
-			try {
-				Thread.sleep(10000);
-			} catch (InterruptedException e) {
-				LOGGER.error(e.getMessage(),e);
-			}
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(),e);
 		}

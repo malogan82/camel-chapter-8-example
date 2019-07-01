@@ -1,5 +1,8 @@
 package it.marco.camel.route.builder;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
@@ -14,6 +17,8 @@ public class MyDelayerRouteBuilder extends RouteBuilder {
 	
 	@Override
 	public void configure() throws Exception {
+		ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
+		
 		onException(Exception.class)
 			.maximumRedeliveries(2)
 			.backOffMultiplier(1.5)
@@ -47,6 +52,23 @@ public class MyDelayerRouteBuilder extends RouteBuilder {
 				
 			})
 			.to("direct:mock-result");
+		
+		from("activemq:foo").
+		  	delay().method("someBean", "computeDelay").
+		  	to("activemq:bar");
+		
+		from("activemq:bar").
+			log("from activemq:bar ----------> ${body}");
+		
+		from("activemq:queue:foo-queue")
+		    .delay(1000)
+		    .asyncDelayed()
+			.callerRunsWhenRejected(true)
+			.executorService(scheduledExecutorService)
+		    .to("activemq:aDelayedQueue");
+		
+		from("activemq:aDelayedQueue").
+			log("from activemq:aDelayedQueue ----------> ${body}");
 		
 		from("direct:mock-halt").
 			log("from direct:mock-halt ----------> ${body}");

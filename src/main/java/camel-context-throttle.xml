@@ -5,7 +5,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans                  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd                 http://camel.apache.org/schema/spring                  http://camel.apache.org/schema/spring/camel-spring.xsd">
     <bean class="java.util.concurrent.Executors"
         factory-method="newScheduledThreadPool" id="scheduledExecutorService">
-        <constructor-arg value="2" type="int"/>
+        <constructor-arg type="int" value="2"/>
     </bean>
     <camelContext id="camelContext-6181de96-d9a3-4d14-817d-d295a4a6a151" xmlns="http://camel.apache.org/schema/spring">
         <route id="_route29">
