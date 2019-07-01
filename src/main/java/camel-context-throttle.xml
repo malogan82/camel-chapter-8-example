@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:prop="http://camel.apache.org/schema/placeholder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans                  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd                 http://camel.apache.org/schema/spring                  http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <bean class="java.util.concurrent.Executors"
+        factory-method="newScheduledThreadPool" id="scheduledExecutorService">
+        <constructor-arg value="2" type="int"/>
+    </bean>
+    <camelContext id="camelContext-6181de96-d9a3-4d14-817d-d295a4a6a151" xmlns="http://camel.apache.org/schema/spring">
+        <route id="_route29">
+            <from id="_from1" uri="seda:a"/>
+            <throttle id="_throttle1" timePeriodMillis="30000">
+                <constant>3</constant>
+                <to id="_to1" uri="direct:mock-result"/>
+            </throttle>
+        </route>
+        <route id="_route30">
+            <from id="_from2" uri="seda:b"/>
+            <throttle id="_throttle2" timePeriodMillis="500">
+                <header>throttleValue</header>
+                <to id="_to2" uri="direct:mock-result"/>
+            </throttle>
+        </route>
+        <route id="_route31">
+            <from id="_from3" uri="seda:c"/>
+            <throttle asyncDelayed="true" id="_throttle3" timePeriodMillis="500">
+                <header>throttleValue</header>
+                <to id="_to3" uri="direct:mock-result"/>
+            </throttle>
+        </route>
+        <route id="_route32">
+            <from id="_from4" uri="seda:d"/>
+            <throttle asyncDelayed="true" callerRunsWhenRejected="true"
+                executorServiceRef="scheduledExecutorService"
+                id="_throttle4" timePeriodMillis="5000">
+                <constant>10</constant>
+                <to id="_to4" uri="direct:mock-result"/>
+            </throttle>
+        </route>
+        <route id="_route33">
+            <from id="_from5" uri="direct:mock-result"/>
+            <log id="_log1" message="from direct:mock-result ---------> ${body}"/>
+        </route>
+    </camelContext>
+</beans>
