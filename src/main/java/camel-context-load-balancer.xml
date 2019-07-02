@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:prop="http://camel.apache.org/schema/placeholder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans                  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd                 http://camel.apache.org/schema/spring                  http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <camelContext id="camelContext-6181de96-d9a3-4d14-817d-d295a4a6a151" xmlns="http://camel.apache.org/schema/spring">
+        <route id="_route34">
+            <from id="_from1" uri="direct:start"/>
+            <loadBalance id="_loadBalance1">
+                <roundRobin id="_roundRobin1"/>
+                <to id="_to1" uri="direct:mock-x"/>
+                <to id="_to2" uri="direct:mock-y"/>
+                <to id="_to3" uri="direct:mock-z"/>
+            </loadBalance>
+        </route>
+        <route id="_route38">
+            <from id="_from5" uri="direct:start-random"/>
+            <loadBalance id="_loadBalance2">
+                <random id="_random1"/>
+                <to id="_to4" uri="direct:mock-random-x"/>
+                <to id="_to5" uri="direct:mock-random-y"/>
+                <to id="_to6" uri="direct:mock-random-z"/>
+            </loadBalance>
+        </route>
+        <route id="_route35">
+            <from id="_from2" uri="direct:mock-x"/>
+            <log id="_log1" message="from direct:mock-x ----------> ${body}"/>
+        </route>
+        <route id="_route36">
+            <from id="_from3" uri="direct:mock-y"/>
+            <log id="_log2" message="from direct:mock-y ----------> ${body}"/>
+        </route>
+        <route id="_route37">
+            <from id="_from4" uri="direct:mock-z"/>
+            <log id="_log3" message="from direct:mock-z ----------> ${body}"/>
+        </route>
+        <route id="_route39">
+            <from id="_from6" uri="direct:mock-random-x"/>
+            <log id="_log4" message="from direct:mock-random-x ----------> ${body}"/>
+        </route>
+        <route id="_route40">
+            <from id="_from7" uri="direct:mock-random-y"/>
+            <log id="_log5" message="from direct:mock-random-y ----------> ${body}"/>
+        </route>
+        <route id="_route41">
+            <from id="_from8" uri="direct:mock-random-z"/>
+            <log id="_log6" message="from direct:mock-random-z ----------> ${body}"/>
+        </route>
+    </camelContext>
+</beans>
