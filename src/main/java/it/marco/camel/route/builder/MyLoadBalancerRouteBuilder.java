@@ -20,6 +20,16 @@ public class MyLoadBalancerRouteBuilder extends RouteBuilder {
 			.loadBalance()
 			.random()
 			.to("direct:mock-random-x","direct:mock-random-y","direct:mock-random-z");
+		
+		from("direct:start-sticky")
+			.loadBalance()
+			.sticky(header("username"))
+			.to("direct:mock-sticky-x","direct:mock-sticky-y","direct:mock-sticky-z");
+		
+		from("direct:start-topic")
+			.loadBalance()
+			.topic()
+			.to("direct:mock-topic-x","direct:mock-topic-y","direct:mock-topic-z");
 			
 		from("direct:mock-x")
 			.log("from direct:mock-x ----------> ${body}");
@@ -38,6 +48,24 @@ public class MyLoadBalancerRouteBuilder extends RouteBuilder {
 		
 		from("direct:mock-random-z")
 			.log("from direct:mock-random-z ----------> ${body}");
+		
+		from("direct:mock-sticky-x")
+			.log("from direct:mock-sticky-x ----------> ${body}");
+	
+		from("direct:mock-sticky-y")
+			.log("from direct:mock-sticky-y ----------> ${body}");
+		
+		from("direct:mock-sticky-z")
+			.log("from direct:mock-sticky-z ----------> ${body}");
+		
+		from("direct:mock-topic-x")
+			.log("from direct:mock-topic-x ----------> ${body}");
+	
+		from("direct:mock-topic-y")
+			.log("from direct:mock-topic-y ----------> ${body}");
+		
+		from("direct:mock-topic-z")
+			.log("from direct:mock-topic-z ----------> ${body}");
 
 	}
 
