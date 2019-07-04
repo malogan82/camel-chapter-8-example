@@ -22,6 +22,17 @@
                 <to id="_to6" uri="direct:mock-random-z"/>
             </loadBalance>
         </route>
+        <route errorHandlerRef="myErrorHandler">
+		    <from uri="direct:foo"/>
+		    <loadBalance>
+		        <failover>
+		            <exception>java.io.IOException</exception>
+		            <exception>it.marco.camel.exception.MyOtherException</exception>
+		        </failover>
+		        <to uri="direct:a"/>
+		        <to uri="direct:b"/>
+		    </loadBalance>
+		</route>
         <route id="_route35">
             <from id="_from2" uri="direct:mock-x"/>
             <log id="_log1" message="from direct:mock-x ----------> ${body}"/>
@@ -45,6 +56,14 @@
         <route id="_route41">
             <from id="_from8" uri="direct:mock-random-z"/>
             <log id="_log6" message="from direct:mock-random-z ----------> ${body}"/>
+        </route>
+        <route>
+            <from uri="direct:a"/>
+            <log message="from direct:a ----------> ${body}"/>
+        </route>
+        <route>
+            <from uri="direct:b"/>
+            <log message="from direct:b ----------> ${body}"/>
         </route>
     </camelContext>
 </beans>

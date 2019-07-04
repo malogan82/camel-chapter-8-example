@@ -35,6 +35,9 @@ public class TestLoadBalancer {
 		producerTemplate.sendBody("direct:start-random","TEST2");
 		producerTemplate.sendBody("direct:start-random","TEST3");
 		producerTemplate.sendBody("direct:start-random","TEST4");
+		producerTemplate.sendBody("direct:start-failover","TEST1");
+		producerTemplate.sendBody("direct:start-failover-no-exception","TEST2");
+		producerTemplate.sendBody("direct:foo","TEST3");
 		try {
 			Thread.sleep(10000);
 			main.stop();
