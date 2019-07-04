@@ -29,30 +29,52 @@ public class MyLoadBalancerRouteBuilder extends RouteBuilder {
 			.random()
 			.to("direct:mock-random-x","direct:mock-random-y","direct:mock-random-z");
 		
-		from("direct:start-failover")
+		from("direct:start-sticky")
 			.loadBalance()
-			.failover(IOException.class)
-			.process(new Processor() {
-				@Override
-				public void process(Exchange exchange) throws Exception {
-					LOGGER.error("##########IOException");
-					throw new IOException();
-				}
-			})
-			.to("direct:x","direct:y","direct:z");
+			.sticky(header("username"))
+			.to("direct:mock-sticky-x","direct:mock-sticky-y","direct:mock-sticky-z");
 		
-		from("direct:start-failover-no-exception")
+		from("direct:start-topic")
 			.loadBalance()
-			.failover()
-			.process(new Processor() {
-				@Override
-				public void process(Exchange exchange) throws Exception {
-					LOGGER.error("##########Exception");
-					throw new Exception();
-				}
-			})
-			.to("direct:x","direct:y","direct:z");
-			
+			.topic()
+			.to("direct:mock-topic-x","direct:mock-topic-y","direct:mock-topic-z");
+		
+		from("direct:start-failover")
+		.loadBalance()
+		.failover(IOException.class)
+		.process(new Processor() {
+			@Override
+			public void process(Exchange exchange) throws Exception {
+				LOGGER.error("##########IOException");
+				throw new IOException();
+			}
+		})
+		.to("direct:x","direct:y","direct:z");
+	
+		from("direct:start-failover-no-exception")
+		.loadBalance()
+		.failover()
+		.process(new Processor() {
+			@Override
+			public void process(Exchange exchange) throws Exception {
+				LOGGER.error("##########Exception");
+				throw new Exception();
+			}
+		})
+		.to("direct:x","direct:y","direct:z");
+		
+		from("direct:foo")
+    	.loadBalance()
+    	.failover(IOException.class, MyOtherException.class)
+    	.process(new Processor() {
+			@Override
+			public void process(Exchange exchange) throws Exception {
+				LOGGER.error("##########MyOtherException");
+				throw new MyOtherException();
+			}
+		})
+		.to("direct:a", "direct:b");
+	
 		from("direct:mock-x")
 			.log("from direct:mock-x ----------> ${body}");
 		
@@ -72,31 +94,37 @@ public class MyLoadBalancerRouteBuilder extends RouteBuilder {
 			.log("from direct:mock-random-z ----------> ${body}");
 		
 		from("direct:x")
-			.log("from direct:x ----------> ${body}");
+		.log("from direct:x ----------> ${body}");
 
 		from("direct:y")
 			.log("from direct:y ----------> ${body}");
 	
 		from("direct:z")
 			.log("from direct:z ----------> ${body}");
-		
-		from("direct:foo")
-	    	.loadBalance()
-	    	.failover(IOException.class, MyOtherException.class)
-	    	.process(new Processor() {
-				@Override
-				public void process(Exchange exchange) throws Exception {
-					LOGGER.error("##########MyOtherException");
-					throw new MyOtherException();
-				}
-			})
-			.to("direct:a", "direct:b");
-		
+	
 		from("direct:a")
 			.log("from direct:a ----------> ${body}");
 		
 		from("direct:b")
 			.log("from direct:b ----------> ${body}");
+		
+		from("direct:mock-sticky-x")
+			.log("from direct:mock-sticky-x ----------> ${body}");
+	
+		from("direct:mock-sticky-y")
+			.log("from direct:mock-sticky-y ----------> ${body}");
+		
+		from("direct:mock-sticky-z")
+			.log("from direct:mock-sticky-z ----------> ${body}");
+		
+		from("direct:mock-topic-x")
+			.log("from direct:mock-topic-x ----------> ${body}");
+	
+		from("direct:mock-topic-y")
+			.log("from direct:mock-topic-y ----------> ${body}");
+		
+		from("direct:mock-topic-z")
+			.log("from direct:mock-topic-z ----------> ${body}");
 
 	}
 

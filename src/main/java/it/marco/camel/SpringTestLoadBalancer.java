@@ -39,6 +39,12 @@ public class SpringTestLoadBalancer {
 			producerTemplate.sendBody("direct:start-random","TEST2");
 			producerTemplate.sendBody("direct:start-random","TEST3");
 			producerTemplate.sendBody("direct:start-random","TEST4");
+			producerTemplate.sendBodyAndHeader("direct:start-sticky", "TEST1", "username", "Marco");
+			producerTemplate.sendBodyAndHeader("direct:start-sticky", "TEST2", "username", "Francesco");
+			producerTemplate.sendBodyAndHeader("direct:start-sticky", "TEST3", "username", "Antonio");
+			producerTemplate.sendBodyAndHeader("direct:start-sticky", "TEST4", "username", "Antonio");
+			producerTemplate.sendBodyAndHeader("direct:start-sticky", "TEST5", "username", "Marco");
+			producerTemplate.sendBodyAndHeader("direct:start-sticky", "TEST6", "username", "Francesco");
 			try {
 				Thread.sleep(10000);
 				main.stop();

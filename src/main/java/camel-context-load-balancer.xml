@@ -22,6 +22,7 @@
                 <to id="_to6" uri="direct:mock-random-z"/>
             </loadBalance>
         </route>
+<<<<<<< HEAD
         <route errorHandlerRef="myErrorHandler">
 		    <from uri="direct:foo"/>
 		    <loadBalance>
@@ -33,6 +34,21 @@
 		        <to uri="direct:b"/>
 		    </loadBalance>
 		</route>
+=======
+        <route>
+        	<from uri="direct:start-sticky"/>
+        	<loadBalance>
+        		<sticky>
+        			<correlationExpression>
+			          <simple>header.username</simple>
+			        </correlationExpression>
+        		</sticky>
+        		<to uri="direct:mock-sticky-x"/>
+      			<to uri="direct:mock-sticky-y"/>
+      			<to uri="direct:mock-sticky-z"/>
+        	</loadBalance>
+        </route>
+>>>>>>> 181c8e43cc5a5926bbddcb7c853aeda1656b8a0b
         <route id="_route35">
             <from id="_from2" uri="direct:mock-x"/>
             <log id="_log1" message="from direct:mock-x ----------> ${body}"/>
@@ -58,6 +74,7 @@
             <log id="_log6" message="from direct:mock-random-z ----------> ${body}"/>
         </route>
         <route>
+<<<<<<< HEAD
             <from uri="direct:a"/>
             <log message="from direct:a ----------> ${body}"/>
         </route>
@@ -65,5 +82,18 @@
             <from uri="direct:b"/>
             <log message="from direct:b ----------> ${body}"/>
         </route>
+=======
+			<from uri="direct:mock-sticky-x"/>
+			<log message="from direct:mock-sticky-x ----------> ${body}"/>
+		</route>
+		<route>
+			<from uri="direct:mock-sticky-y"/>
+			<log message="from direct:mock-sticky-y ----------> ${body}"/>
+		</route>
+		<route>
+			<from uri="direct:mock-sticky-z"/>
+			<log message="from direct:mock-sticky-z ----------> ${body}"/>
+		</route>
+>>>>>>> 181c8e43cc5a5926bbddcb7c853aeda1656b8a0b
     </camelContext>
 </beans>
