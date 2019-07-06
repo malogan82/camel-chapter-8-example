@@ -4,6 +4,7 @@
     xmlns:prop="http://camel.apache.org/schema/placeholder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans                  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd                 http://camel.apache.org/schema/spring                  http://camel.apache.org/schema/spring/camel-spring.xsd">
     <camelContext id="camelContext-6181de96-d9a3-4d14-817d-d295a4a6a151" xmlns="http://camel.apache.org/schema/spring">
+        <errorHandler id="myErrorHandler" type="DefaultErrorHandler"/>
         <route id="_route34">
             <from id="_from1" uri="direct:start"/>
             <loadBalance id="_loadBalance1">
@@ -34,29 +35,29 @@
                 <to id="_to6" uri="direct:mock-random-z"/>
             </loadBalance>
         </route>
-        <route errorHandlerRef="myErrorHandler">
-		    <from uri="direct:foo"/>
-		    <loadBalance>
-		        <failover>
-		            <exception>java.io.IOException</exception>
-		            <exception>it.marco.camel.exception.MyOtherException</exception>
-		        </failover>
-		        <to uri="direct:a"/>
-		        <to uri="direct:b"/>
-		    </loadBalance>
-		</route>
-        <route>
-        	<from uri="direct:start-sticky"/>
-        	<loadBalance>
-        		<sticky>
-        			<correlationExpression>
-			          <simple>header.username</simple>
-			        </correlationExpression>
-        		</sticky>
-        		<to uri="direct:mock-sticky-x"/>
-      			<to uri="direct:mock-sticky-y"/>
-      			<to uri="direct:mock-sticky-z"/>
-        	</loadBalance>
+        <route errorHandlerRef="myErrorHandler" id="_route42">
+            <from id="_from9" uri="direct:foo"/>
+            <loadBalance id="_loadBalance3">
+                <failover id="_failover1" maximumFailoverAttempts="5" roundRobin="true">
+                    <exception>java.io.IOException</exception>
+                    <exception>it.marco.camel.exception.MyOtherException</exception>
+                </failover>
+                <to id="_to7" uri="direct:a"/>
+                <to id="_to8" uri="direct:b"/>
+            </loadBalance>
+        </route>
+        <route id="_route43">
+            <from id="_from10" uri="direct:start-sticky"/>
+            <loadBalance id="_loadBalance4">
+                <sticky id="_sticky1">
+                    <correlationExpression>
+                        <simple>header.username</simple>
+                    </correlationExpression>
+                </sticky>
+                <to id="_to9" uri="direct:mock-sticky-x"/>
+                <to id="_to10" uri="direct:mock-sticky-y"/>
+                <to id="_to11" uri="direct:mock-sticky-z"/>
+            </loadBalance>
         </route>
         <route id="_route39">
             <from id="_from6" uri="direct:mock-random-x"/>
@@ -70,25 +71,25 @@
             <from id="_from8" uri="direct:mock-random-z"/>
             <log id="_log6" message="from direct:mock-random-z ----------> ${body}"/>
         </route>
-        <route>
-        	<from uri="direct:a"/>
-            <log message="from direct:a ----------> ${body}"/>
+        <route id="_route44">
+            <from id="_from11" uri="direct:a"/>
+            <log id="_log7" message="from direct:a ----------> ${body}"/>
         </route>
-        <route>
-            <from uri="direct:b"/>
-            <log message="from direct:b ----------> ${body}"/>
+        <route id="_route45">
+            <from id="_from12" uri="direct:b"/>
+            <log id="_log8" message="from direct:b ----------> ${body}"/>
         </route>
-        <route>
-        	<from uri="direct:mock-sticky-x"/>
-			<log message="from direct:mock-sticky-x ----------> ${body}"/>
-		</route>
-		<route>
-			<from uri="direct:mock-sticky-y"/>
-			<log message="from direct:mock-sticky-y ----------> ${body}"/>
-		</route>
-		<route>
-			<from uri="direct:mock-sticky-z"/>
-			<log message="from direct:mock-sticky-z ----------> ${body}"/>
-		</route>
+        <route id="_route46">
+            <from id="_from13" uri="direct:mock-sticky-x"/>
+            <log id="_log9" message="from direct:mock-sticky-x ----------> ${body}"/>
+        </route>
+        <route id="_route47">
+            <from id="_from14" uri="direct:mock-sticky-y"/>
+            <log id="_log10" message="from direct:mock-sticky-y ----------> ${body}"/>
+        </route>
+        <route id="_route48">
+            <from id="_from15" uri="direct:mock-sticky-z"/>
+            <log id="_log11" message="from direct:mock-sticky-z ----------> ${body}"/>
+        </route>
     </camelContext>
 </beans>

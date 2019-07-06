@@ -8,9 +8,9 @@
             <from id="_from1" uri="direct:start"/>
             <resequence id="_resequence1">
                 <batch-config allowDuplicates="true" batchSize="300"
-                    		  batchTimeout="4000" reverse="true"/>
-                <simple>header.TimeStamp</simple>
+                    batchTimeout="4000" reverse="true">_batch-config1</batch-config>
                 <to id="_to1" uri="direct:mock-result"/>
+                <simple>header.TimeStamp</simple>
             </resequence>
         </route>
         <route id="_route22">
@@ -20,9 +20,9 @@
         <route id="_route23">
             <from id="_from3" uri="direct:start-stream-resequencer"/>
             <resequence id="_resequence2">
-                <stream-config capacity="5000" timeout="4000"/>
-                <simple>header.seqnum</simple>
+                <stream-config capacity="5000" timeout="4000">_stream-config1</stream-config>
                 <to id="_to2" uri="direct:mock-result"/>
+                <simple>header.seqnum</simple>
             </resequence>
         </route>
     </camelContext>
