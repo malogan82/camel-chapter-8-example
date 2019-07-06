@@ -40,40 +40,30 @@ public class MyLoadBalancerRouteBuilder extends RouteBuilder {
 			.to("direct:mock-topic-x","direct:mock-topic-y","direct:mock-topic-z");
 		
 		from("direct:start-failover")
-		.loadBalance()
-		.failover(IOException.class)
-		.process(new Processor() {
-			@Override
-			public void process(Exchange exchange) throws Exception {
-				LOGGER.error("##########IOException");
-				throw new IOException();
-			}
-		})
-		.to("direct:x","direct:y","direct:z");
+			.loadBalance()
+			.failover(IOException.class)
+			.to("direct:failover-x",
+				"direct:failover-y",
+				"direct:failover-z");
+		
+		from("direct:start-failover-no-error-handler")
+			.loadBalance()
+			.failover(1,false,true,IOException.class)
+			.to("direct:failover-x",
+				"direct:failover-y",
+				"direct:failover-z");
 	
 		from("direct:start-failover-no-exception")
-		.loadBalance()
-		.failover()
-		.process(new Processor() {
-			@Override
-			public void process(Exchange exchange) throws Exception {
-				LOGGER.error("##########Exception");
-				throw new Exception();
-			}
-		})
-		.to("direct:x","direct:y","direct:z");
+			.loadBalance()
+			.failover()
+			.to("direct:failover-x",
+				"direct:failover-y",
+				"direct:failover-z");
 		
 		from("direct:foo")
-    	.loadBalance()
-    	.failover(IOException.class, MyOtherException.class)
-    	.process(new Processor() {
-			@Override
-			public void process(Exchange exchange) throws Exception {
-				LOGGER.error("##########MyOtherException");
-				throw new MyOtherException();
-			}
-		})
-		.to("direct:a", "direct:b");
+	    	.loadBalance()
+	    	.failover(IOException.class, MyOtherException.class)
+			.to("direct:a", "direct:b");
 	
 		from("direct:mock-x")
 			.log("from direct:mock-x ----------> ${body}");
@@ -93,19 +83,84 @@ public class MyLoadBalancerRouteBuilder extends RouteBuilder {
 		from("direct:mock-random-z")
 			.log("from direct:mock-random-z ----------> ${body}");
 		
-		from("direct:x")
-		.log("from direct:x ----------> ${body}");
+		from("direct:failover-x")
+			.process(new Processor() {
+				@Override
+				public void process(Exchange exchange) throws Exception {
+					LOGGER.error("##########IOException");
+					throw new IOException();
+				}
+			})
+			.process(new Processor() {
+				@Override
+				public void process(Exchange exchange) throws Exception {
+					LOGGER.info("##########NEXT PROCESSOR");
+				}
+			})
+			.log("from direct:failover-x ----------> ${body}");
 
-		from("direct:y")
-			.log("from direct:y ----------> ${body}");
+		from("direct:failover-y")
+			.process(new Processor() {
+				@Override
+				public void process(Exchange exchange) throws Exception {
+					LOGGER.error("##########IOException");
+					throw new IOException();
+				}
+			})
+			.process(new Processor() {
+				@Override
+				public void process(Exchange exchange) throws Exception {
+					LOGGER.info("##########NEXT PROCESSOR");
+				}
+			})
+			.log("from direct:failover-y ----------> ${body}");
 	
-		from("direct:z")
-			.log("from direct:z ----------> ${body}");
-	
+		from("direct:failover-z")
+			.process(new Processor() {
+				@Override
+				public void process(Exchange exchange) throws Exception {
+					LOGGER.error("##########IOException");
+					throw new IOException();
+				}
+			})
+			.process(new Processor() {
+				@Override
+				public void process(Exchange exchange) throws Exception {
+					LOGGER.info("##########NEXT PROCESSOR");
+				}
+			})
+			.log("from direct:failover-z ----------> ${body}");
+		
 		from("direct:a")
+			.process(new Processor() {
+				@Override
+				public void process(Exchange exchange) throws Exception {
+					LOGGER.error("##########MyOtherException");
+					throw new MyOtherException();
+				}
+			})
+	    	.process(new Processor() {
+				@Override
+				public void process(Exchange exchange) throws Exception {
+					LOGGER.info("##########NEXT PROCESSOR");
+				}
+			})
 			.log("from direct:a ----------> ${body}");
 		
 		from("direct:b")
+			.process(new Processor() {
+				@Override
+				public void process(Exchange exchange) throws Exception {
+					LOGGER.error("##########MyOtherException");
+					throw new MyOtherException();
+				}
+			})
+	    	.process(new Processor() {
+				@Override
+				public void process(Exchange exchange) throws Exception {
+					LOGGER.info("##########NEXT PROCESSOR");
+				}
+			})
 			.log("from direct:b ----------> ${body}");
 		
 		from("direct:mock-sticky-x")

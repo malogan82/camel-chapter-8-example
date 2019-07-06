@@ -13,6 +13,18 @@
                 <to id="_to3" uri="direct:mock-z"/>
             </loadBalance>
         </route>
+        <route id="_route35">
+            <from id="_from2" uri="direct:mock-x"/>
+            <log id="_log1" message="from direct:mock-x ----------> ${body}"/>
+        </route>
+        <route id="_route36">
+            <from id="_from3" uri="direct:mock-y"/>
+            <log id="_log2" message="from direct:mock-y ----------> ${body}"/>
+        </route>
+        <route id="_route37">
+            <from id="_from4" uri="direct:mock-z"/>
+            <log id="_log3" message="from direct:mock-z ----------> ${body}"/>
+        </route>
         <route id="_route38">
             <from id="_from5" uri="direct:start-random"/>
             <loadBalance id="_loadBalance2">
@@ -22,7 +34,6 @@
                 <to id="_to6" uri="direct:mock-random-z"/>
             </loadBalance>
         </route>
-<<<<<<< HEAD
         <route errorHandlerRef="myErrorHandler">
 		    <from uri="direct:foo"/>
 		    <loadBalance>
@@ -34,7 +45,6 @@
 		        <to uri="direct:b"/>
 		    </loadBalance>
 		</route>
-=======
         <route>
         	<from uri="direct:start-sticky"/>
         	<loadBalance>
@@ -47,19 +57,6 @@
       			<to uri="direct:mock-sticky-y"/>
       			<to uri="direct:mock-sticky-z"/>
         	</loadBalance>
-        </route>
->>>>>>> 181c8e43cc5a5926bbddcb7c853aeda1656b8a0b
-        <route id="_route35">
-            <from id="_from2" uri="direct:mock-x"/>
-            <log id="_log1" message="from direct:mock-x ----------> ${body}"/>
-        </route>
-        <route id="_route36">
-            <from id="_from3" uri="direct:mock-y"/>
-            <log id="_log2" message="from direct:mock-y ----------> ${body}"/>
-        </route>
-        <route id="_route37">
-            <from id="_from4" uri="direct:mock-z"/>
-            <log id="_log3" message="from direct:mock-z ----------> ${body}"/>
         </route>
         <route id="_route39">
             <from id="_from6" uri="direct:mock-random-x"/>
@@ -74,16 +71,15 @@
             <log id="_log6" message="from direct:mock-random-z ----------> ${body}"/>
         </route>
         <route>
-<<<<<<< HEAD
-            <from uri="direct:a"/>
+        	<from uri="direct:a"/>
             <log message="from direct:a ----------> ${body}"/>
         </route>
         <route>
             <from uri="direct:b"/>
             <log message="from direct:b ----------> ${body}"/>
         </route>
-=======
-			<from uri="direct:mock-sticky-x"/>
+        <route>
+        	<from uri="direct:mock-sticky-x"/>
 			<log message="from direct:mock-sticky-x ----------> ${body}"/>
 		</route>
 		<route>
@@ -94,6 +90,5 @@
 			<from uri="direct:mock-sticky-z"/>
 			<log message="from direct:mock-sticky-z ----------> ${body}"/>
 		</route>
->>>>>>> 181c8e43cc5a5926bbddcb7c853aeda1656b8a0b
     </camelContext>
 </beans>
