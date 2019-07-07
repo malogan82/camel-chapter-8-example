@@ -48,7 +48,8 @@ public class SpringTestLoadBalancer {
 //			producerTemplate.sendBody("direct:start-failover","TEST1");
 //			producerTemplate.sendBody("direct:start-failover-no-exception","TEST1");
 //			producerTemplate.sendBody("direct:foo","TEST1");
-			producerTemplate.sendBody("direct:start-failover-no-exception-roundrobin","TEST1");
+//			producerTemplate.sendBody("direct:start-failover-no-exception-roundrobin","TEST1");
+			producerTemplate.sendBody("direct:start-weighted","TEST1");
 			try {
 				Thread.sleep(10000);
 				main.stop();

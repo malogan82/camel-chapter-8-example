@@ -71,6 +71,20 @@ public class MyLoadBalancerRouteBuilder extends RouteBuilder {
 	    	.loadBalance()
 	    	.failover(IOException.class, MyOtherException.class)
 			.to("direct:a", "direct:b");
+		
+		from("direct:start-weighted")
+			.loadBalance()
+			.weighted(true, "4:2:1", ":")
+			.to("direct:start-weighted:x", 
+				"direct:start-weighted:y", 
+				"direct:start-weighted:z");
+		
+		from("direct:start-weighted-default-delimiter")
+			.loadBalance()
+			.weighted(true, "4,2,1")
+			.to("direct:start-weighted:x", 
+				"direct:start-weighted:y", 
+				"direct:start-weighted:z");
 	
 		from("direct:mock-x")
 			.log("from direct:mock-x ----------> ${body}");
@@ -187,6 +201,15 @@ public class MyLoadBalancerRouteBuilder extends RouteBuilder {
 		
 		from("direct:mock-topic-z")
 			.log("from direct:mock-topic-z ----------> ${body}");
+		
+		from("direct:start-weighted:x")
+			.log("from direct:start-weighted:x ----------> ${body}");
+
+		from("direct:start-weighted:y")
+			.log("from direct:start-weighted:y ----------> ${body}");
+	
+		from("direct:start-weighted:z")
+			.log("from direct:start-weighted:z ----------> ${body}");
 
 	}
 

@@ -61,6 +61,15 @@
                 <to id="_to11" uri="direct:mock-sticky-z"/>
             </loadBalance>
         </route>
+        <route>
+  			<from uri="direct:start-weighted"/>
+  			<loadBalance>
+    			<weighted roundRobin="true" distributionRatio="4:2:1" distributionRatioDelimiter=":"/>
+    			<to uri="direct:start-weighted-x"/>
+    			<to uri="direct:start-weighted-y"/>
+    			<to uri="direct:start-weighted-z"/>
+  			</loadBalance>
+		</route>
         <route id="_route39">
             <from id="_from6" uri="direct:mock-random-x"/>
             <log id="_log4" message="from direct:mock-random-x ----------> ${body}"/>
@@ -145,6 +154,18 @@
             <log id="_log17" message="from direct:failover-z ----------> java.io.IOException"/>
             <throwException exceptionType="java.io.IOException" id="_throwException3"/>
             <log id="_log14" message="from direct:failover-z ----------> ${body}"/>
+        </route>
+        <route>
+            <from uri="direct:start-weighted-x"/>
+            <log message="from direct:start-weighted-x ----------> ${body}"/>
+        </route>
+        <route>
+            <from uri="direct:start-weighted-y"/>
+            <log message="from direct:start-weighted-y ----------> ${body}"/>
+        </route>
+        <route>
+            <from uri="direct:start-weighted-z"/>
+            <log message="from direct:start-weighted-z ----------> ${body}"/>
         </route>
     </camelContext>
 </beans>
