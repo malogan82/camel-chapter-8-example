@@ -31,20 +31,24 @@ public class SpringTestLoadBalancer {
 			}
 			LOGGER.info("MAIN STARTED");
 			ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
-			producerTemplate.sendBody("direct:start","TEST1");
-			producerTemplate.sendBody("direct:start","TEST2");
-			producerTemplate.sendBody("direct:start","TEST3");
-			producerTemplate.sendBody("direct:start","TEST4");
-			producerTemplate.sendBody("direct:start-random","TEST1");
-			producerTemplate.sendBody("direct:start-random","TEST2");
-			producerTemplate.sendBody("direct:start-random","TEST3");
-			producerTemplate.sendBody("direct:start-random","TEST4");
-			producerTemplate.sendBodyAndHeader("direct:start-sticky", "TEST1", "username", "Marco");
-			producerTemplate.sendBodyAndHeader("direct:start-sticky", "TEST2", "username", "Francesco");
-			producerTemplate.sendBodyAndHeader("direct:start-sticky", "TEST3", "username", "Antonio");
-			producerTemplate.sendBodyAndHeader("direct:start-sticky", "TEST4", "username", "Antonio");
-			producerTemplate.sendBodyAndHeader("direct:start-sticky", "TEST5", "username", "Marco");
-			producerTemplate.sendBodyAndHeader("direct:start-sticky", "TEST6", "username", "Francesco");
+//			producerTemplate.sendBody("direct:start","TEST1");
+//			producerTemplate.sendBody("direct:start","TEST2");
+//			producerTemplate.sendBody("direct:start","TEST3");
+//			producerTemplate.sendBody("direct:start","TEST4");
+//			producerTemplate.sendBody("direct:start-random","TEST1");
+//			producerTemplate.sendBody("direct:start-random","TEST2");
+//			producerTemplate.sendBody("direct:start-random","TEST3");
+//			producerTemplate.sendBody("direct:start-random","TEST4");
+//			producerTemplate.sendBodyAndHeader("direct:start-sticky", "TEST1", "username", "Marco");
+//			producerTemplate.sendBodyAndHeader("direct:start-sticky", "TEST2", "username", "Francesco");
+//			producerTemplate.sendBodyAndHeader("direct:start-sticky", "TEST3", "username", "Antonio");
+//			producerTemplate.sendBodyAndHeader("direct:start-sticky", "TEST4", "username", "Antonio");
+//			producerTemplate.sendBodyAndHeader("direct:start-sticky", "TEST5", "username", "Marco");
+//			producerTemplate.sendBodyAndHeader("direct:start-sticky", "TEST6", "username", "Francesco");
+//			producerTemplate.sendBody("direct:start-failover","TEST1");
+//			producerTemplate.sendBody("direct:start-failover-no-exception","TEST1");
+//			producerTemplate.sendBody("direct:foo","TEST1");
+			producerTemplate.sendBody("direct:start-failover-no-exception-roundrobin","TEST1");
 			try {
 				Thread.sleep(10000);
 				main.stop();

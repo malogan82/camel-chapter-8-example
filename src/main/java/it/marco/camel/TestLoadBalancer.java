@@ -43,9 +43,10 @@ public class TestLoadBalancer {
 //		producerTemplate.sendBodyAndHeader("direct:start-sticky", "TEST6", "username", "Francesco");
 //		producerTemplate.sendBody("direct:start-topic","CICCIO PASTICCIO");
 //		producerTemplate.sendBody("direct:start-failover","TEST1");
-		producerTemplate.sendBody("direct:start-failover-no-error-handler","TEST1");
+//		producerTemplate.sendBody("direct:start-failover-no-error-handler","TEST1");
 //		producerTemplate.sendBody("direct:start-failover-no-exception","TEST2");
 //		producerTemplate.sendBody("direct:foo","TEST3");
+		producerTemplate.sendBody("direct:start-failover-no-exception-roundrobin","TEST1");
 		try {
 			Thread.sleep(10000);
 			main.stop();

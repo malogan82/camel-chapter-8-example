@@ -60,6 +60,13 @@ public class MyLoadBalancerRouteBuilder extends RouteBuilder {
 				"direct:failover-y",
 				"direct:failover-z");
 		
+		from("direct:start-failover-no-exception-roundrobin")
+			.loadBalance()
+			.failover(5,false,true)
+			.to("direct:failover-x",
+				"direct:failover-y",
+				"direct:failover-z");
+		
 		from("direct:foo")
 	    	.loadBalance()
 	    	.failover(IOException.class, MyOtherException.class)

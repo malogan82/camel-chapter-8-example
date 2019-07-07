@@ -4,7 +4,9 @@
     xmlns:prop="http://camel.apache.org/schema/placeholder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans                  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd                 http://camel.apache.org/schema/spring                  http://camel.apache.org/schema/spring/camel-spring.xsd">
     <camelContext id="camelContext-6181de96-d9a3-4d14-817d-d295a4a6a151" xmlns="http://camel.apache.org/schema/spring">
-        <errorHandler id="myErrorHandler" type="DefaultErrorHandler"/>
+        <errorHandler id="myErrorHandler" type="DefaultErrorHandler">
+            <redeliveryPolicy maximumRedeliveries="5"/>
+        </errorHandler>
         <route id="_route34">
             <from id="_from1" uri="direct:start"/>
             <loadBalance id="_loadBalance1">
@@ -73,10 +75,16 @@
         </route>
         <route id="_route44">
             <from id="_from11" uri="direct:a"/>
+            <log id="_log18" message="from direct:a ----------> it.marco.camel.exception.MyOtherException"/>
+            <throwException
+                exceptionType="it.marco.camel.exception.MyOtherException" id="_throwException4"/>
             <log id="_log7" message="from direct:a ----------> ${body}"/>
         </route>
         <route id="_route45">
             <from id="_from12" uri="direct:b"/>
+            <log id="_log19" message="from direct:b ----------> it.marco.camel.exception.MyOtherException"/>
+            <throwException
+                exceptionType="it.marco.camel.exception.MyOtherException" id="_throwException5"/>
             <log id="_log8" message="from direct:b ----------> ${body}"/>
         </route>
         <route id="_route46">
@@ -90,6 +98,53 @@
         <route id="_route48">
             <from id="_from15" uri="direct:mock-sticky-z"/>
             <log id="_log11" message="from direct:mock-sticky-z ----------> ${body}"/>
+        </route>
+        <route errorHandlerRef="myErrorHandler" id="_route49">
+            <from id="_from16" uri="direct:start-failover"/>
+            <loadBalance id="_loadBalance5">
+                <failover id="_failover2">
+                    <exception>java.io.IOException</exception>
+                </failover>
+                <to id="_to12" uri="direct:failover-x"/>
+                <to id="_to13" uri="direct:failover-y"/>
+                <to id="_to14" uri="direct:failover-z"/>
+            </loadBalance>
+        </route>
+        <route errorHandlerRef="myErrorHandler" id="_route53">
+            <from id="_from20" uri="direct:start-failover-no-exception"/>
+            <loadBalance id="_loadBalance6">
+                <failover id="_failover3"/>
+                <to id="_to15" uri="direct:failover-x"/>
+                <to id="_to16" uri="direct:failover-y"/>
+                <to id="_to17" uri="direct:failover-z"/>
+            </loadBalance>
+        </route>
+        <route errorHandlerRef="myErrorHandler">
+        	<from uri="direct:start-failover-no-exception-roundrobin"/>
+        	<loadBalance>
+        		<failover maximumFailoverAttempts="5" roundRobin="true"/>
+       			<to uri="direct:failover-x"/>
+                <to uri="direct:failover-y"/>
+               	<to uri="direct:failover-z"/>
+        	</loadBalance>
+        </route>
+        <route id="_route50">
+            <from id="_from17" uri="direct:failover-x"/>
+            <log id="_log15" message="from direct:failover-x ----------> java.io.IOException"/>
+            <throwException exceptionType="java.io.IOException" id="_throwException1"/>
+            <log id="_log12" message="from direct:failover-x ----------> ${body}"/>
+        </route>
+        <route id="_route51">
+            <from id="_from18" uri="direct:failover-y"/>
+            <log id="_log16" message="from direct:failover-y ----------> java.io.IOException"/>
+            <throwException exceptionType="java.io.IOException" id="_throwException2"/>
+            <log id="_log13" message="from direct:failover-y ----------> ${body}"/>
+        </route>
+        <route id="_route52">
+            <from id="_from19" uri="direct:failover-z"/>
+            <log id="_log17" message="from direct:failover-z ----------> java.io.IOException"/>
+            <throwException exceptionType="java.io.IOException" id="_throwException3"/>
+            <log id="_log14" message="from direct:failover-z ----------> ${body}"/>
         </route>
     </camelContext>
 </beans>
