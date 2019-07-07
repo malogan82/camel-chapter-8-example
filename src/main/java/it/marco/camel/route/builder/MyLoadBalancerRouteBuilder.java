@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.marco.camel.exception.MyOtherException;
+import it.marco.camel.load.balancer.MyLoadBalancer;
 
 public class MyLoadBalancerRouteBuilder extends RouteBuilder {
 	
@@ -75,16 +76,22 @@ public class MyLoadBalancerRouteBuilder extends RouteBuilder {
 		from("direct:start-weighted")
 			.loadBalance()
 			.weighted(true, "4:2:1", ":")
-			.to("direct:start-weighted:x", 
-				"direct:start-weighted:y", 
-				"direct:start-weighted:z");
+			.to("direct:start-weighted-x", 
+				"direct:start-weighted-y", 
+				"direct:start-weighted-z");
 		
 		from("direct:start-weighted-default-delimiter")
 			.loadBalance()
 			.weighted(true, "4,2,1")
-			.to("direct:start-weighted:x", 
-				"direct:start-weighted:y", 
-				"direct:start-weighted:z");
+			.to("direct:start-weighted-x", 
+				"direct:start-weighted-y", 
+				"direct:start-weighted-z");
+		
+		from("direct:start-custom-load-balancer")
+			.loadBalance(new MyLoadBalancer())
+			.to("direct:custom-load-balancer-x",
+				"direct:custom-load-balancer-y",
+				"direct:custom-load-balancer-z");
 	
 		from("direct:mock-x")
 			.log("from direct:mock-x ----------> ${body}");
@@ -202,14 +209,23 @@ public class MyLoadBalancerRouteBuilder extends RouteBuilder {
 		from("direct:mock-topic-z")
 			.log("from direct:mock-topic-z ----------> ${body}");
 		
-		from("direct:start-weighted:x")
-			.log("from direct:start-weighted:x ----------> ${body}");
+		from("direct:start-weighted-x")
+			.log("from direct:start-weighted-x ----------> ${body}");
 
-		from("direct:start-weighted:y")
-			.log("from direct:start-weighted:y ----------> ${body}");
+		from("direct:start-weighted-y")
+			.log("from direct:start-weighted-y ----------> ${body}");
 	
-		from("direct:start-weighted:z")
-			.log("from direct:start-weighted:z ----------> ${body}");
+		from("direct:start-weighted-z")
+			.log("from direct:start-weighted-z ----------> ${body}");
+		
+		from("direct:custom-load-balancer-x")
+			.log("from direct:custom-load-balancer-x ----------> ${body}");
+
+		from("direct:custom-load-balancer-y")
+			.log("from direct:custom-load-balancer-y ----------> ${body}");
+
+		from("direct:custom-load-balancer-z")
+			.log("from direct:custom-load-balancer-z ----------> ${body}");
 
 	}
 

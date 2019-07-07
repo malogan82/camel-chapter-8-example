@@ -3,6 +3,7 @@
     xmlns:camel="http://camel.apache.org/schema/spring"
     xmlns:prop="http://camel.apache.org/schema/placeholder"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans                  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd                 http://camel.apache.org/schema/spring                  http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <bean class="it.marco.camel.load.balancer.MyLoadBalancer" id="myBalancer"/>
     <camelContext id="camelContext-6181de96-d9a3-4d14-817d-d295a4a6a151" xmlns="http://camel.apache.org/schema/spring">
         <errorHandler id="myErrorHandler" type="DefaultErrorHandler">
             <redeliveryPolicy maximumRedeliveries="5"/>
@@ -61,15 +62,16 @@
                 <to id="_to11" uri="direct:mock-sticky-z"/>
             </loadBalance>
         </route>
-        <route>
-  			<from uri="direct:start-weighted"/>
-  			<loadBalance>
-    			<weighted roundRobin="true" distributionRatio="4:2:1" distributionRatioDelimiter=":"/>
-    			<to uri="direct:start-weighted-x"/>
-    			<to uri="direct:start-weighted-y"/>
-    			<to uri="direct:start-weighted-z"/>
-  			</loadBalance>
-		</route>
+        <route id="_route55">
+            <from id="_from22" uri="direct:start-weighted"/>
+            <loadBalance id="_loadBalance8">
+                <weighted distributionRatio="4:2:1"
+                    distributionRatioDelimiter=":" id="_weighted1" roundRobin="true"/>
+                <to id="_to21" uri="direct:start-weighted-x"/>
+                <to id="_to22" uri="direct:start-weighted-y"/>
+                <to id="_to23" uri="direct:start-weighted-z"/>
+            </loadBalance>
+        </route>
         <route id="_route39">
             <from id="_from6" uri="direct:mock-random-x"/>
             <log id="_log4" message="from direct:mock-random-x ----------> ${body}"/>
@@ -137,6 +139,15 @@
                 <to id="_to20" uri="direct:failover-z"/>
             </loadBalance>
         </route>
+        <route id="_route56">
+            <from id="_from23" uri="direct:start-custom-load-balancer"/>
+            <loadBalance id="_loadBalance9">
+                <custom ref="myBalancer"/>
+                <to id="_to24" uri="direct:custom-load-balancer-x"/>
+                <to id="_to25" uri="direct:custom-load-balancer-y"/>
+                <to id="_to26" uri="direct:custom-load-balancer-z"/>
+            </loadBalance>
+        </route>
         <route id="_route50">
             <from id="_from17" uri="direct:failover-x"/>
             <log id="_log15" message="from direct:failover-x ----------> java.io.IOException"/>
@@ -155,17 +166,29 @@
             <throwException exceptionType="java.io.IOException" id="_throwException3"/>
             <log id="_log14" message="from direct:failover-z ----------> ${body}"/>
         </route>
-        <route>
-            <from uri="direct:start-weighted-x"/>
-            <log message="from direct:start-weighted-x ----------> ${body}"/>
+        <route id="_route57">
+            <from id="_from24" uri="direct:start-weighted-x"/>
+            <log id="_log20" message="from direct:start-weighted-x ----------> ${body}"/>
         </route>
-        <route>
-            <from uri="direct:start-weighted-y"/>
-            <log message="from direct:start-weighted-y ----------> ${body}"/>
+        <route id="_route58">
+            <from id="_from25" uri="direct:start-weighted-y"/>
+            <log id="_log21" message="from direct:start-weighted-y ----------> ${body}"/>
         </route>
-        <route>
-            <from uri="direct:start-weighted-z"/>
-            <log message="from direct:start-weighted-z ----------> ${body}"/>
+        <route id="_route59">
+            <from id="_from26" uri="direct:start-weighted-z"/>
+            <log id="_log22" message="from direct:start-weighted-z ----------> ${body}"/>
+        </route>
+        <route id="_route60">
+            <from id="_from27" uri="direct:custom-load-balancer-x"/>
+            <log id="_log23" message="from direct:custom-load-balancer-x ----------> ${body}"/>
+        </route>
+        <route id="_route61">
+            <from id="_from28" uri="direct:custom-load-balancer-y"/>
+            <log id="_log24" message="from direct:custom-load-balancer-y ----------> ${body}"/>
+        </route>
+        <route id="_route62">
+            <from id="_from29" uri="direct:custom-load-balancer-z"/>
+            <log id="_log25" message="from direct:custom-load-balancer-z ----------> ${body}"/>
         </route>
     </camelContext>
 </beans>
