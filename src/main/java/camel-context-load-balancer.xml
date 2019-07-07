@@ -119,14 +119,14 @@
                 <to id="_to17" uri="direct:failover-z"/>
             </loadBalance>
         </route>
-        <route errorHandlerRef="myErrorHandler">
-        	<from uri="direct:start-failover-no-exception-roundrobin"/>
-        	<loadBalance>
-        		<failover maximumFailoverAttempts="5" roundRobin="true"/>
-       			<to uri="direct:failover-x"/>
-                <to uri="direct:failover-y"/>
-               	<to uri="direct:failover-z"/>
-        	</loadBalance>
+        <route errorHandlerRef="myErrorHandler" id="_route54">
+            <from id="_from21" uri="direct:start-failover-no-exception-roundrobin"/>
+            <loadBalance id="_loadBalance7">
+                <failover id="_failover4" maximumFailoverAttempts="5" roundRobin="true"/>
+                <to id="_to18" uri="direct:failover-x"/>
+                <to id="_to19" uri="direct:failover-y"/>
+                <to id="_to20" uri="direct:failover-z"/>
+            </loadBalance>
         </route>
         <route id="_route50">
             <from id="_from17" uri="direct:failover-x"/>
