@@ -8,6 +8,7 @@ import org.apache.camel.builder.RouteBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import it.marco.camel.exception.MyCustomException;
 import it.marco.camel.exception.MyOtherException;
 import it.marco.camel.load.balancer.MyLoadBalancer;
 
@@ -92,6 +93,11 @@ public class MyLoadBalancerRouteBuilder extends RouteBuilder {
 			.to("direct:custom-load-balancer-x",
 				"direct:custom-load-balancer-y",
 				"direct:custom-load-balancer-z");
+		
+		from("direct:start-circuit-breaker")
+			.loadBalance()
+			.circuitBreaker(2, 1000L, MyCustomException.class)
+			.to("direct:start-circuit-breaker-result");
 	
 		from("direct:mock-x")
 			.log("from direct:mock-x ----------> ${body}");
@@ -226,6 +232,9 @@ public class MyLoadBalancerRouteBuilder extends RouteBuilder {
 
 		from("direct:custom-load-balancer-z")
 			.log("from direct:custom-load-balancer-z ----------> ${body}");
+		
+		from("direct:start-circuit-breaker-result")
+			.log("from direct:start-circuit-breaker-result ----------> ${body}");
 
 	}
 

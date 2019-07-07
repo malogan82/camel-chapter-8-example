@@ -148,6 +148,15 @@
                 <to id="_to26" uri="direct:custom-load-balancer-z"/>
             </loadBalance>
         </route>
+        <route>
+    		<from uri="direct:start-circuit-breaker"/>
+    		<loadBalance>
+        		<circuitBreaker threshold="2" halfOpenAfter="1000">
+            		<exception>it.marco.camel.exception.MyCustomException</exception>
+        		</circuitBreaker>
+        		<to uri="direct:start-circuit-breaker-result"/>
+    		</loadBalance>
+		</route>
         <route id="_route50">
             <from id="_from17" uri="direct:failover-x"/>
             <log id="_log15" message="from direct:failover-x ----------> java.io.IOException"/>
@@ -189,6 +198,10 @@
         <route id="_route62">
             <from id="_from29" uri="direct:custom-load-balancer-z"/>
             <log id="_log25" message="from direct:custom-load-balancer-z ----------> ${body}"/>
+        </route>
+        <route>
+        	<from uri="direct:start-circuit-breaker-result"/>
+        	<log message="from direct:start-circuit-breaker-result ----------> ${body}"/>
         </route>
     </camelContext>
 </beans>
