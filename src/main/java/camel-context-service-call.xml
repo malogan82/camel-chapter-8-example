@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:prop="http://camel.apache.org/schema/placeholder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans                  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd                 http://camel.apache.org/schema/spring                  http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <bean class="it.marco.camel.load.balancer.MyLoadBalancer" id="myBalancer"/>
+    <camelContext id="camelContext-6181de96-d9a3-4d14-817d-d295a4a6a151" xmlns="http://camel.apache.org/schema/spring">
+    	<route>
+    		<from uri="direct:start"/>
+    		<serviceCall name="foo?beer=yes"/>
+    		<to uri="direct:mock-result"/>
+  		</route>
+  		<route>
+  			<from uri="direct:start-context-path"/>
+  			<serviceCall name="foo/beverage?beer=yes"/>
+  			<to uri="direct:mock-result"/>
+  		</route>
+  		<route>
+  			<from uri="direct:start-controlled-resolved-uri-1"/>
+  			<serviceCall name="myService" uri="http:myService.host:myService.port/foo"/>
+  			<to uri="direct:mock-result"/>
+  		</route>
+  		<route>
+  			<from uri="direct:start-controlled-resolved-uri-2"/>
+  			<serviceCall name="myService" uri="netty4:tcp:myService?connectTimeout=1000"/>
+  			<to uri="direct:mock-result"/>
+  		</route>
+  		<route>
+  			<from uri="direct:mock-result"/>
+  			<log message="from direct:mock-result ----------> ${body}"/>
+  		</route>
+    </camelContext>
+</beans>

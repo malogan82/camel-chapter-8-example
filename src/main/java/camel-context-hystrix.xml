@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:prop="http://camel.apache.org/schema/placeholder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans                  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd                 http://camel.apache.org/schema/spring                  http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <bean class="it.marco.camel.load.balancer.MyLoadBalancer" id="myBalancer"/>
+    <camelContext id="camelContext-6181de96-d9a3-4d14-817d-d295a4a6a151" xmlns="http://camel.apache.org/schema/spring">
+        <hystrixConfiguration id="sharedConfig" executionTimeoutInMilliseconds="5000" circuitBreakerSleepWindowInMilliseconds="10000"/>
+        <route id="_route63">
+            <from id="_from1" uri="direct:start"/>
+            <hystrix id="_hystrix1">
+                <to id="_to1" uri="http://fooservice.com/slow"/>
+                <onFallback id="_onFallback1">
+                    <transform id="_transform1">
+                        <constant>Fallback message</constant>
+                    </transform>
+                </onFallback>
+            </hystrix>
+            <to id="_to2" uri="direct:mock-result"/>
+        </route>
+        <route>
+        	<from uri="direct:start-configuration"/>
+        	<hystrix>
+                <hystrixConfiguration executionTimeoutInMilliseconds="5000" 
+                				      circuitBreakerSleepWindowInMilliseconds="10000"/>
+      				<to uri="http://fooservice.com/slow"/>
+      				<onFallback>
+        				<transform>
+          					<constant>Fallback message</constant>
+        				</transform>
+      				</onFallback>
+    		</hystrix>
+    		<to uri="direct:mock-result"/>
+        </route>
+        <route>
+        	<from uri="direct:start-global-configuration"/>
+        	<hystrix hystrixConfigurationRef="sharedConfig">
+        			<to uri="http://fooservice.com/slow"/>
+        			<onFallback>
+        				<transform>
+        					<constant>Fallback message</constant>
+        				</transform>
+        			</onFallback>
+        	</hystrix>
+        	<to uri="direct:mock-result"/>
+        </route>
+        <route id="_route64">
+            <from id="_from2" uri="direct:mock-result"/>
+            <log id="_log1" message="from direct:mock-result ---------> ${body}"/>
+        </route>
+    </camelContext>
+</beans>
