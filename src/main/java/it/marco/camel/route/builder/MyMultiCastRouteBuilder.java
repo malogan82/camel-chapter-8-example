@@ -9,6 +9,7 @@ import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 
 import it.marco.camel.processor.MyMultiCastProcessor;
+import it.marco.camel.processor.MyOnPrepareProcessor;
 import it.marco.camel.strategy.HighestBidAggregationStrategy;
 
 public class MyMultiCastRouteBuilder extends RouteBuilder {
@@ -52,6 +53,20 @@ public class MyMultiCastRouteBuilder extends RouteBuilder {
 			    .to("direct:buyer1", "direct:buyer2", "direct:buyer3")
 			.end()
 			.process(new MyMultiCastProcessor());
+		
+		from("direct:start-offer-on-prepare")
+			.multicast(new HighestBidAggregationStrategy())
+				.onPrepare(new MyOnPrepareProcessor())
+			    .to("direct:buyer1", "direct:buyer2", "direct:buyer3")
+			.end()
+			.process(new Processor() {
+				@Override
+				public void process(Exchange exchange) throws Exception {
+					exchange.getIn().setBody(String.format("%s - %s",
+											 exchange.getIn().getBody(String.class), 
+											 exchange.getIn().getHeader("Bid",String.class)));
+				}
+			});
 		
 		from("direct:buyer1")
 			.setHeader("Bid",constant(new Float(5000)))
