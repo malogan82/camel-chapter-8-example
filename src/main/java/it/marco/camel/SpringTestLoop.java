@@ -11,12 +11,12 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import it.marco.camel.runnable.MyRunnable;
 
-public class SpringTestMultiCast {
+public class SpringTestLoop {
 	
-	public static Logger LOGGER = LoggerFactory.getLogger(SpringTestMultiCast.class);
-	
+	public static Logger LOGGER = LoggerFactory.getLogger(SpringTestLoop.class);
+
 	public static void main(String[] args) {
-		AbstractXmlApplicationContext appContext = new ClassPathXmlApplicationContext("camel-context-multicast.xml");
+		AbstractXmlApplicationContext appContext = new ClassPathXmlApplicationContext("camel-context-loop.xml");
 		try {
 			CamelContext camelContext = SpringCamelContext.springCamelContext(appContext);
 			Main main = new Main();
@@ -31,11 +31,13 @@ public class SpringTestMultiCast {
 			}
 			LOGGER.info("MAIN STARTED");
 			ProducerTemplate producerTemplate = camelContext.createProducerTemplate();
-			long startTime1 = System.currentTimeMillis();
-			String response1 = producerTemplate.requestBody("direct:start-offer","TEST",String.class);
-			long endTime1 = System.currentTimeMillis();
-			LOGGER.info(String.format("TIME ELAPSED ----------> %s", endTime1-startTime1));
-			LOGGER.info(String.format("RESPONSE ----------> %s", response1));
+			producerTemplate.sendBody("direct:start","TEST1");
+			producerTemplate.sendBodyAndHeader("direct:start-header","TEST2","loop",9);
+			String xmlBody = "<hello times=\"10\">TEST3</hello>";
+			producerTemplate.sendBody("direct:start-xpath",xmlBody);
+			producerTemplate.sendBody("direct:start-copy","TEST4");
+			producerTemplate.sendBody("direct:start-no-copy","TEST5");
+			producerTemplate.sendBody("direct:start-do-while","A");
 			try {
 				main.stop();
 			} catch (Exception e) {
@@ -45,6 +47,7 @@ public class SpringTestMultiCast {
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage(),e);
 		}
+		
 	}
-
+	
 }
