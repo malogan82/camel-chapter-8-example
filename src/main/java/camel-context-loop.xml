@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:prop="http://camel.apache.org/schema/placeholder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans                  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd                 http://camel.apache.org/schema/spring                  http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <bean class="it.marco.camel.load.balancer.MyLoadBalancer" id="myBalancer"/>
+    <camelContext id="camelContext-6181de96-d9a3-4d14-817d-d295a4a6a151" xmlns="http://camel.apache.org/schema/spring">
+        <route>
+        	<from uri="direct:start"/>
+        	<loop>
+    			<constant>8</constant>
+    			<to uri="direct:mock-result"/>
+  			</loop>
+        </route>
+        <route>
+  			<from uri="direct:start-header"/>
+			<loop>
+			   <header>loop</header>
+			   <to uri="direct:mock-result"/>
+			</loop>
+		</route>
+		<route>
+  			<from uri="direct:start-xpath"/>
+			<loop>
+			   <xpath>/hello/@times</xpath>
+			   <to uri="direct:mock-result"/>
+			</loop>
+		</route>
+		<route>
+   			<from uri="direct:start-copy"/>
+		    <loop copy="true">
+		      <constant>3</constant>
+		      <transform>
+		        <simple>${body}B</simple>
+		      </transform>
+		      <to uri="direct:mock-loop"/>
+		   </loop>
+		   <to uri="direct:mock-result"/>
+		</route>
+		<route>
+   			<from uri="direct:start-no-copy"/>
+		    <loop>
+		      <constant>3</constant>
+		      <transform>
+		        <simple>${body}B</simple>
+		      </transform>
+		      <to uri="direct:mock-loop"/>
+		   </loop>
+		   <to uri="direct:mock-result"/>
+		</route>
+		<route>
+		  	<from uri="direct:start-do-while"/>
+		    <loop doWhile="true">
+		      <simple>${body.length} <![CDATA[<]]>= 5</simple>
+		      <to uri="direct:mock-loop"/>
+		      <transform>
+		        <simple>A${body}</simple>
+		      </transform>
+		    </loop>
+		    <to uri="direct:mock-result"/>
+		</route>
+		<route>
+        	<from uri="direct:mock-loop"/>
+        	<log message="from direct:mock-loop ----------> ${body}"/>
+        </route>
+        <route>
+        	<from uri="direct:mock-result"/>
+        	<log message="from direct:mock-result ----------> ${body}"/>
+        </route>
+    </camelContext>
+</beans>

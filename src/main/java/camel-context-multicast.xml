@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:prop="http://camel.apache.org/schema/placeholder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans                  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd                 http://camel.apache.org/schema/spring                  http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <bean id="myOnPrepareProcessor" class="it.marco.camel.processor.MyOnPrepareProcessor"/>
+    <bean id="myMultiCastProcessor" class="it.marco.camel.processor.MyMultiCastProcessor"/>
+    <bean id="highestBidAggregationStrategy" class="it.marco.camel.strategy.HighestBidAggregationStrategy"/>
+    <camelContext xmlns="http://camel.apache.org/schema/spring">
+        <route>
+      		<from uri="direct:start-offer"/>
+		    <multicast strategyRef="highestBidAggregationStrategy"
+		               parallelProcessing="true">
+		       <to uri="direct:buyer1"/>
+		       <to uri="direct:buyer2"/>
+		       <to uri="direct:buyer3"/>
+		    </multicast>
+		    <process ref="myMultiCastProcessor"/>
+	    </route>
+	    <route>
+      		<from uri="direct:start-offer-on-prepare"/>
+		    <multicast onPrepareRef="myOnPrepareProcessor"
+		    		   strategyRef="highestBidAggregationStrategy"
+		               parallelProcessing="true">
+		       <to uri="direct:buyer1"/>
+		       <to uri="direct:buyer2"/>
+		       <to uri="direct:buyer3"/>
+		    </multicast>
+		    <process ref="myMultiCastProcessor"/>
+	    </route>
+	    <route>
+	    	<from uri="direct:buyer1"/>
+	    	<setHeader headerName="Bid">
+	    		<constant>5000</constant>
+	    	</setHeader>
+	    	<log message="${header.Bid}"/>
+	    </route>
+	    <route>
+	    	<from uri="direct:buyer2"/>
+	    	<setHeader headerName="Bid">
+	    		<constant>6000</constant>
+	    	</setHeader>
+	    	<log message="${header.Bid}"/>
+	    </route>
+	    <route>
+	    	<from uri="direct:buyer3"/>
+	    	<setHeader headerName="Bid">
+	    		<constant>7000</constant>
+	    	</setHeader>
+	    	<log message="${header.Bid}"/>
+	    </route>
+    </camelContext>
+</beans>

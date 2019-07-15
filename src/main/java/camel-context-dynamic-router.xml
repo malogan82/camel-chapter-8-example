@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:camel="http://camel.apache.org/schema/spring"
+    xmlns:prop="http://camel.apache.org/schema/placeholder"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans                  http://www.springframework.org/schema/beans/spring-beans-3.0.xsd                 http://camel.apache.org/schema/spring                  http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <bean class="it.marco.camel.pojo.DynamicRouterTest" id="mySlip"/>
+    <camelContext id="camelContext-6181de96-d9a3-4d14-817d-d295a4a6a151" xmlns="http://camel.apache.org/schema/spring">
+        <route id="_route77">
+            <from id="_from1" uri="direct:start"/>
+            <dynamicRouter id="_dynamicRouter1">
+                <!-- use a method call on a bean as dynamic router -->
+                <method method="slip" ref="mySlip"/>
+            </dynamicRouter>
+        </route>
+        <route id="_route78">
+            <from id="_from2" uri="direct:foo"/>
+            <transform id="_transform1">
+                <constant>Bye World</constant>
+            </transform>
+            <to id="_to1" uri="direct:mock-foo"/>
+        </route>
+        <route>
+            <from uri="direct:mock-a"/>
+            <log message="from direct:mock-a ----------> ${body}"/>
+        </route>
+        <route>
+            <from uri="direct:mock-b"/>
+            <log message="from direct:mock-b ----------> ${body}"/>
+        </route>
+        <route>
+            <from uri="direct:mock-c"/>
+            <log message="from direct:mock-c ----------> ${body}"/>
+        </route>
+        <route>
+            <from uri="direct:mock-result"/>
+            <log message="from direct:mock-result ----------> ${body}"/>
+        </route>
+        <route id="_route79">
+            <from id="_from3" uri="direct:mock-foo"/>
+            <log id="_log1" message="from direct:mock-foo ----------> ${body}"/>
+        </route>
+    </camelContext>
+</beans>
